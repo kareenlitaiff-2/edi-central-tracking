@@ -1,6 +1,6 @@
 /**
- * Mock EDI orders for the vendor operations "EDI Central Tracking — Operational Tool" prototype.
- * @see HLR-edi-central-tracking-operational-tool.md
+ * Mock EDI orders for the central tracker prototype.
+ * Generated client-side so the prototype works offline / via file://.
  */
 window.EDI_DATA = (function () {
   const VENDORS = [
@@ -10,39 +10,40 @@ window.EDI_DATA = (function () {
     { code: 'AB_INBV', name: 'AB InBev US' },
   ];
 
-  const RETAILER_CHAINS = ['OXXO', 'Soriana', 'Walmart', 'Chedraui', 'Seven Eleven', 'La Comer'];
-
-  const REGIONS = ['Central', 'North', 'Pacific', 'Southeast', 'Bajío'];
-
-  const SALES_REPS = [
-    'Ana Ruiz', 'Carlos Méndez', 'Mariana López', 'Diego Herrera', 'Lucía Vargas',
-    'Pedro Soto', 'Fernanda Gil', 'Jorge Castillo', 'Valentina Núñez', 'Roberto Paz',
-  ];
-
+  // The "logged-in" retailer has access to these 4 POCs by default.
+  // The full POC list (12) is searchable in the filter dropdown.
   const POCS = [
-    { id: 'POC-1001', name: 'OXXO Insurgentes', city: 'Mexico City', chain: 'OXXO', region: 'Central' },
-    { id: 'POC-1002', name: 'OXXO Reforma 222', city: 'Mexico City', chain: 'OXXO', region: 'Central' },
-    { id: 'POC-1003', name: 'OXXO Polanco', city: 'Mexico City', chain: 'OXXO', region: 'Central' },
-    { id: 'POC-1004', name: 'OXXO Santa Fe', city: 'Mexico City', chain: 'OXXO', region: 'Central' },
-    { id: 'POC-2001', name: 'Soriana Centro', city: 'Monterrey', chain: 'Soriana', region: 'North' },
-    { id: 'POC-2002', name: 'Soriana Cumbres', city: 'Monterrey', chain: 'Soriana', region: 'North' },
-    { id: 'POC-3001', name: 'Walmart Roma Norte', city: 'Mexico City', chain: 'Walmart', region: 'Central' },
-    { id: 'POC-3002', name: 'Walmart Coyoacán', city: 'Mexico City', chain: 'Walmart', region: 'Central' },
-    { id: 'POC-3003', name: 'Walmart Satélite', city: 'Mexico City', chain: 'Walmart', region: 'Central' },
-    { id: 'POC-4001', name: 'Chedraui Las Águilas', city: 'Guadalajara', chain: 'Chedraui', region: 'Pacific' },
-    { id: 'POC-4002', name: 'Chedraui Providencia', city: 'Guadalajara', chain: 'Chedraui', region: 'Pacific' },
-    { id: 'POC-4003', name: 'Chedraui Chapalita', city: 'Guadalajara', chain: 'Chedraui', region: 'Pacific' },
+    { id: 'POC-1001', name: "OXXO Insurgentes",        city: 'Mexico City',  user: true  },
+    { id: 'POC-1002', name: "OXXO Reforma 222",         city: 'Mexico City',  user: true  },
+    { id: 'POC-1003', name: "OXXO Polanco",             city: 'Mexico City',  user: true  },
+    { id: 'POC-1004', name: "OXXO Santa Fe",            city: 'Mexico City',  user: true  },
+    { id: 'POC-2001', name: "Soriana Centro",           city: 'Monterrey',    user: false },
+    { id: 'POC-2002', name: "Soriana Cumbres",          city: 'Monterrey',    user: false },
+    { id: 'POC-3001', name: "Walmart Roma Norte",       city: 'Mexico City',  user: false },
+    { id: 'POC-3002', name: "Walmart Coyoacán",         city: 'Mexico City',  user: false },
+    { id: 'POC-3003', name: "Walmart Satélite",         city: 'Mexico City',  user: false },
+    { id: 'POC-4001', name: "Chedraui Las Águilas",     city: 'Guadalajara',  user: false },
+    { id: 'POC-4002', name: "Chedraui Providencia",     city: 'Guadalajara',  user: false },
+    { id: 'POC-4003', name: "Chedraui Chapalita",       city: 'Guadalajara',  user: false },
   ];
 
+  // Status taxonomy:
+  //   WAITING / PROCESSING — transient, system-driven
+  //   ACCEPTED             — terminal success
+  //   ALERTS               — terminal success but with non-blocking deviations
+  //   BLOCKED              — on-hold by a business rule, awaiting human action.
+  //                          If not resolved within the SLA, the order auto-rejects.
+  //   REJECTED             — terminal failure
   const STATUSES = [
-    { id: 'WAITING', label: 'Waiting process', tone: 'info', weight: 7 },
-    { id: 'PROCESSING', label: 'Processing', tone: 'info', weight: 6 },
-    { id: 'ACCEPTED', label: 'Accepted', tone: 'success', weight: 38 },
-    { id: 'ALERTS', label: 'Accepted with alerts', tone: 'warning', weight: 18 },
-    { id: 'BLOCKED', label: 'Blocked', tone: 'blocked', weight: 12 },
-    { id: 'REJECTED', label: 'Rejected', tone: 'error', weight: 14 },
+    { id: 'WAITING',     label: 'Waiting process',     tone: 'info',    weight: 7  },
+    { id: 'PROCESSING',  label: 'Processing',          tone: 'info',    weight: 6  },
+    { id: 'ACCEPTED',    label: 'Accepted',            tone: 'success', weight: 42 },
+    { id: 'ALERTS',      label: 'Accepted with alerts',tone: 'warning', weight: 20 },
+    { id: 'BLOCKED',     label: 'Blocked',             tone: 'blocked', weight: 10 },
+    { id: 'REJECTED',    label: 'Rejected',            tone: 'error',   weight: 15 },
   ];
 
+  // Reasons keyed by status
   const ALERT_REASONS = [
     'Item out of stock — substituted',
     'Price mismatch — adjusted to contract',
@@ -50,6 +51,9 @@ window.EDI_DATA = (function () {
     'Minimum order quantity rounded up',
     'Discount applied differs from request',
   ];
+  // Blocked = order is on hold pending human resolution (e.g. a buyer or vendor
+  // ops user adjusts the underlying configuration). After the SLA window
+  // (typically 24–72h depending on rule), the order auto-transitions to REJECTED.
   const BLOCKED_REASONS = [
     'Credit limit exceeded — awaiting credit team review',
     'Suspicious order volume — fraud check in progress',
@@ -68,94 +72,71 @@ window.EDI_DATA = (function () {
     'Invalid UoM for line item',
   ];
 
+  // ----------------------------------------------------------------
+  // Catalog of mock SKUs. Used to populate per-item lines on each order
+  // so the Item-level page can show *which products* failed and why.
+  // ----------------------------------------------------------------
   const CATALOG = [
-    { sku: '7891000100103', name: 'Corona Extra 355ml — 24-pack', family: 'Lager', uom: 'CASE' },
-    { sku: '7891000100110', name: 'Stella Artois 330ml — 24-pack', family: 'Lager', uom: 'CASE' },
-    { sku: '7891000100127', name: 'Budweiser 350ml — 12-pack', family: 'Lager', uom: 'CASE' },
-    { sku: '7891000100134', name: 'Bohemia Pilsen 355ml — 6-pack', family: 'Pilsner', uom: 'CASE' },
-    { sku: '7891000100141', name: 'Modelo Especial 355ml — 12-pack', family: 'Lager', uom: 'CASE' },
-    { sku: '7891000100158', name: 'Negra Modelo 355ml — 6-pack', family: 'Dark', uom: 'CASE' },
-    { sku: '7891000100165', name: 'Pacífico 355ml — 12-pack', family: 'Lager', uom: 'CASE' },
-    { sku: '7891000100172', name: 'Victoria 355ml — 12-pack', family: 'Lager', uom: 'CASE' },
-    { sku: '7891000100189', name: 'Hoegaarden 330ml — 6-pack', family: 'Wheat', uom: 'CASE' },
-    { sku: '7891000100196', name: 'Leffe Blonde 330ml — 6-pack', family: 'Abbey', uom: 'CASE' },
-    { sku: '7891000100202', name: 'Goose Island IPA 355ml — 6-pack', family: 'IPA', uom: 'CASE' },
-    { sku: '7891000100219', name: 'Michelob Ultra 355ml — 12-pack', family: 'Light', uom: 'CASE' },
-    { sku: '7891000100226', name: 'Beck\'s 330ml — 6-pack', family: 'Pilsner', uom: 'CASE' },
-    { sku: '7891000100233', name: 'Brahma Chopp 350ml — 12-pack', family: 'Lager', uom: 'CASE' },
-    { sku: '7891000100240', name: 'Skol 350ml — 12-pack', family: 'Lager', uom: 'CASE' },
-    { sku: '7891000100257', name: 'Antarctica Original 355ml — 6pk', family: 'Lager', uom: 'CASE' },
-    { sku: '7891000100264', name: 'Quilmes Cristal 340ml — 12-pack', family: 'Lager', uom: 'CASE' },
-    { sku: '7891000100271', name: 'Patagonia Amber Lager 355ml — 6pk', family: 'Amber', uom: 'CASE' },
+    { sku: '7891000100103', name: 'Corona Extra 355ml — 24-pack',     family: 'Lager',   uom: 'CASE' },
+    { sku: '7891000100110', name: 'Stella Artois 330ml — 24-pack',    family: 'Lager',   uom: 'CASE' },
+    { sku: '7891000100127', name: 'Budweiser 350ml — 12-pack',        family: 'Lager',   uom: 'CASE' },
+    { sku: '7891000100134', name: 'Bohemia Pilsen 355ml — 6-pack',    family: 'Pilsner', uom: 'CASE' },
+    { sku: '7891000100141', name: 'Modelo Especial 355ml — 12-pack',  family: 'Lager',   uom: 'CASE' },
+    { sku: '7891000100158', name: 'Negra Modelo 355ml — 6-pack',      family: 'Dark',    uom: 'CASE' },
+    { sku: '7891000100165', name: 'Pacífico 355ml — 12-pack',         family: 'Lager',   uom: 'CASE' },
+    { sku: '7891000100172', name: 'Victoria 355ml — 12-pack',         family: 'Lager',   uom: 'CASE' },
+    { sku: '7891000100189', name: 'Hoegaarden 330ml — 6-pack',        family: 'Wheat',   uom: 'CASE' },
+    { sku: '7891000100196', name: 'Leffe Blonde 330ml — 6-pack',      family: 'Abbey',   uom: 'CASE' },
+    { sku: '7891000100202', name: 'Goose Island IPA 355ml — 6-pack',  family: 'IPA',     uom: 'CASE' },
+    { sku: '7891000100219', name: 'Michelob Ultra 355ml — 12-pack',   family: 'Light',   uom: 'CASE' },
+    { sku: '7891000100226', name: 'Beck\'s 330ml — 6-pack',           family: 'Pilsner', uom: 'CASE' },
+    { sku: '7891000100233', name: 'Brahma Chopp 350ml — 12-pack',     family: 'Lager',   uom: 'CASE' },
+    { sku: '7891000100240', name: 'Skol 350ml — 12-pack',             family: 'Lager',   uom: 'CASE' },
+    { sku: '7891000100257', name: 'Antarctica Original 355ml — 6pk',  family: 'Lager',   uom: 'CASE' },
+    { sku: '7891000100264', name: 'Quilmes Cristal 340ml — 12-pack',  family: 'Lager',   uom: 'CASE' },
+    { sku: '7891000100271', name: 'Patagonia Amber Lager 355ml — 6pk',family: 'Amber',   uom: 'CASE' },
   ];
 
+  // ----------------------------------------------------------------
+  // Per-line-item issues. Each issue is tied to a *matching rule* that
+  // BEES ran against the EDI line — the rule explains the policy that
+  // fired, the reason explains the user-facing outcome.
+  // ----------------------------------------------------------------
+  // User-facing issue descriptions for each line. The `rule` field is kept
+  // internally for analytics/debug, but the UI shows only the `label` —
+  // copy is written for the retailer reading their order, not for the
+  // engineer who configured the matching rule.
   const ITEM_ISSUES = {
     ALERTS: [
+      // Price issue → unit price was rewritten to match the current contract.
       { code: 'PRICE_ADJUSTED', rule: 'Price issue',
         label: 'Unit price was adjusted from {req} to {del} to match the current contract.' },
-      { code: 'PARTIAL_FILL', rule: 'SKU Availability',
+      // SKU Availability → we couldn't fulfil the full quantity requested.
+      { code: 'PARTIAL_FILL',   rule: 'SKU Availability',
         label: 'Only {pct}% of the requested quantity is available — we will deliver {del} of the {req} {uom} requested.' },
-      { code: 'PACK_ADJUSTED', rule: 'Pack size',
+      // Pack size → quantity was rounded to the nearest valid pack multiple.
+      { code: 'PACK_ADJUSTED',  rule: 'Pack size',
         label: 'Quantity was adjusted from {req} to {del} {uom} to match the contracted pack size.' },
     ],
+    // BLOCKED-level: line is on hold, awaiting human action upstream.
     BLOCKED: [
       { code: 'UPC_NOT_MATCHED', rule: 'UPC Matching',
         label: 'We could not match this product to the BEES catalog. The order is on hold until the SKU is registered or the EDI line is corrected.' },
-      { code: 'CREDIT_HOLD', rule: 'Credit',
-        label: 'This line is on hold until credit for this POC is released by the finance team.' },
-      { code: 'DELIVERY_WINDOW', rule: 'Delivery window',
-        label: 'The requested delivery date is outside the vendor calendar for this POC.' },
     ],
+    // REJECTED-level: line is terminal. Copy explains *why* in plain language.
     REJECTED: [
       { code: 'UPC_NOT_MATCHED', rule: 'UPC Matching',
         label: 'Product could not be matched to the BEES catalog within the retry window. The line was rejected.' },
-      { code: 'INVALID_UOM', rule: 'Pack size',
+      { code: 'INVALID_UOM',     rule: 'Pack size',
         label: 'The pack size requested is not available for this POC. The line was rejected.' },
-      { code: 'NOT_IN_CATALOG', rule: 'SKU Availability',
+      { code: 'NOT_IN_CATALOG',  rule: 'SKU Availability',
         label: 'This SKU is out of stock for the delivery window and could not be substituted.' },
-      { code: 'PRICE_REJECTED', rule: 'Price issue',
+      { code: 'PRICE_REJECTED',  rule: 'Price issue',
         label: 'The submitted price is below the contract floor. The line was rejected for review.' },
     ],
   };
 
-  function ruleIdFor(code) {
-    const map = {
-      PRICE_ADJUSTED: 'BRE-PRICE-2104',
-      PARTIAL_FILL: 'BRE-AVAIL-8831',
-      PACK_ADJUSTED: 'BRE-PACK-4402',
-      UPC_NOT_MATCHED: 'BRE-UPC-4412',
-      CREDIT_HOLD: 'BRE-CREDIT-1209',
-      DELIVERY_WINDOW: 'BRE-DLV-3301',
-      INVALID_UOM: 'BRE-PACK-4410',
-      NOT_IN_CATALOG: 'BRE-AVAIL-8820',
-      PRICE_REJECTED: 'BRE-PRICE-2199',
-    };
-    return map[code] || 'BRE-GEN-0001';
-  }
-
-  function diagnosticForIssue(issue, sku, pocId, pocName) {
-    if (!issue) return '';
-    if (issue.code === 'UPC_NOT_MATCHED') {
-      return `Register SKU ${sku} in the BEES catalog for ${pocId} (${pocName}) to clear this hold, or correct the GTIN on the EDI line.`;
-    }
-    if (issue.code === 'PRICE_ADJUSTED' || issue.code === 'PRICE_REJECTED') {
-      return `Update the price contract for this SKU and POC in commercial master data, then reprocess.`;
-    }
-    if (issue.code === 'PARTIAL_FILL' || issue.code === 'NOT_IN_CATALOG') {
-      return `Confirm inventory and substitution rules for ${sku}; adjust availability or delivery window if needed.`;
-    }
-    if (issue.code === 'PACK_ADJUSTED' || issue.code === 'INVALID_UOM') {
-      return `Align the requested UoM with the contracted pack configuration for this POC.`;
-    }
-    if (issue.code === 'CREDIT_HOLD') {
-      return `Release or increase the credit hold with the credit team for this POC before reprocessing.`;
-    }
-    if (issue.code === 'DELIVERY_WINDOW') {
-      return `Adjust the delivery calendar or ask the retailer to resubmit within an allowed window.`;
-    }
-    return `Review matching configuration for rule ${issue.code} and reprocess after the upstream fix.`;
-  }
-
+  // Deterministic pseudo-random so the page is the same on every reload.
   let seed = 42;
   const rand = () => { seed = (seed * 9301 + 49297) % 233280; return seed / 233280; };
   const pick = (arr) => arr[Math.floor(rand() * arr.length)];
@@ -167,45 +148,47 @@ window.EDI_DATA = (function () {
   };
 
   const now = Date.now();
-  const orders = [];
+  const DAY = 24 * 60 * 60 * 1000;
 
-  for (let i = 0; i < 100; i++) {
-    const poc = pick(POCS);
+  // Generate ~80 orders across the last 30 days, weighted to the user's POCs (because they are who we're testing for).
+  const orders = [];
+  const userPocs = POCS.filter((p) => p.user);
+  for (let i = 0; i < 80; i++) {
+    const isUserPoc = rand() < 0.78; // user sees mostly their own POCs
+    const poc = isUserPoc ? pick(userPocs) : pick(POCS);
     const vendor = pick(VENDORS);
     const status = pickWeighted(STATUSES);
-    const minutesAgo = Math.floor(rand() * 90 * 24 * 60);
+    const minutesAgo = Math.floor(rand() * 30 * 24 * 60);
     const receivedAt = new Date(now - minutesAgo * 60 * 1000);
     const po = (10000000 + Math.floor(rand() * 89999999)).toString();
     let reason = '';
     if (status.id === 'ALERTS') reason = pick(ALERT_REASONS);
     else if (status.id === 'BLOCKED') reason = pick(BLOCKED_REASONS);
     else if (status.id === 'REJECTED') reason = pick(REJECT_REASONS);
-    const itemCount = 3 + Math.floor(rand() * 9);
+    const itemCount = 3 + Math.floor(rand() * 9);    // 3..11 lines per order
 
+    // BEES order number — only assigned once an EDI order has actually been
+    // ingested into the BEES OMS. Statuses without a BEES record (Waiting,
+    // Processing, Blocked, Rejected) leave this null.
     const hasBeesNumber = (status.id === 'ACCEPTED' || status.id === 'ALERTS');
     const beesOrderNumber = hasBeesNumber
       ? 'BEES-' + (1000000000 + Math.floor(rand() * 8999999999)).toString()
       : null;
 
-    const salesRep = pick(SALES_REPS);
-    const region = poc.region || pick(REGIONS);
-    const retailerChain = poc.chain || pick(RETAILER_CHAINS);
-
-    let slaDeadlineAt = null;
-    let slaUrgent = false;
-    let hoursInBlocked = null;
-    if (status.id === 'BLOCKED') {
-      hoursInBlocked = Math.floor(rand() * 48);
-      const slaH = 24 + Math.floor(rand() * 48);
-      const deadline = new Date(receivedAt.getTime() + slaH * 3600000);
-      slaDeadlineAt = deadline.toISOString();
-      const hoursLeft = (deadline - now) / 3600000;
-      slaUrgent = hoursLeft > 0 && hoursLeft < 12;
-    }
-
+    // Build line items. The order-level status implies a per-line distribution:
+    //   ACCEPTED  → 100% OK
+    //   ALERTS    → 1..N lines have an alert; rest OK
+    //   BLOCKED   → 1..N lines have a block (the rest may be OK or have alerts)
+    //   REJECTED  → 1..N lines rejected (the rest may be OK / alerts / blocked)
+    //   WAITING/PROCESSING → all lines pending
+    //
+    // Each line records both the *requested* values (what the retailer
+    // submitted via EDI) and the *delivered* values (what BEES will fulfil
+    // after running the matching rules). For OK lines they're identical;
+    // for ALERTs they diverge in a way explained by the rule that fired.
     const items = [];
-    let totalValue = 0;
-    let requestedTotalValue = 0;
+    let totalValue = 0;          // sum of delivered (or pending) line values
+    let requestedTotalValue = 0; // sum of requested line values (audit trail)
 
     for (let li = 0; li < itemCount; li++) {
       const sku = pick(CATALOG);
@@ -214,21 +197,24 @@ window.EDI_DATA = (function () {
       const requestedLineValue = requestedQty * requestedUnitPrice;
       requestedTotalValue += requestedLineValue;
 
+      // Defaults — line accepted as requested
       let qty = requestedQty;
       let unitPrice = requestedUnitPrice;
-      let lineStatus = 'OK'; let issue = null; let issueLabel = null;
+      let lineStatus = 'OK', issue = null, issueLabel = null;
 
       function fmtMoneyMx(n) {
         return '$' + n.toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 });
       }
       function interpolate(template, vars) {
         return template
-          .replace('{req}', vars.req != null ? vars.req : '')
-          .replace('{del}', vars.del != null ? vars.del : '')
-          .replace('{pct}', vars.pct != null ? String(vars.pct) : '')
-          .replace('{uom}', vars.uom || '');
+          .replace('{req}',  vars.req  != null ? vars.req  : '')
+          .replace('{del}',  vars.del  != null ? vars.del  : '')
+          .replace('{pct}',  vars.pct  != null ? String(vars.pct) : '')
+          .replace('{uom}',  vars.uom  || '');
       }
       function applyAlert(spec) {
+        // Diverge requested vs delivered based on which rule fired,
+        // then interpolate the diff into the user-facing label.
         if (spec.code === 'PRICE_ADJUSTED') {
           unitPrice = Math.max(50, Math.round(requestedUnitPrice * (0.85 + rand() * 0.10)));
           issueLabel = interpolate(spec.label, {
@@ -261,22 +247,17 @@ window.EDI_DATA = (function () {
         if (rand() < 0.5) { lineStatus = 'ALERT'; applyAlert(pick(ITEM_ISSUES.ALERTS)); }
       } else if (status.id === 'BLOCKED') {
         const r = rand();
-        if (r < 0.4) { lineStatus = 'BLOCKED'; issue = pick(ITEM_ISSUES.BLOCKED); issueLabel = issue.label; }
-        else if (r < 0.6) { lineStatus = 'ALERT'; applyAlert(pick(ITEM_ISSUES.ALERTS)); }
+        if (r < 0.4)      { lineStatus = 'BLOCKED'; issue = pick(ITEM_ISSUES.BLOCKED); issueLabel = issue.label; }
+        else if (r < 0.6) { lineStatus = 'ALERT';   applyAlert(pick(ITEM_ISSUES.ALERTS)); }
       } else if (status.id === 'REJECTED') {
         const r = rand();
-        if (r < 0.4) { lineStatus = 'REJECTED'; issue = pick(ITEM_ISSUES.REJECTED); issueLabel = issue.label; }
-        else if (r < 0.55) { lineStatus = 'BLOCKED'; issue = pick(ITEM_ISSUES.BLOCKED); issueLabel = issue.label; }
-        else if (r < 0.7) { lineStatus = 'ALERT'; applyAlert(pick(ITEM_ISSUES.ALERTS)); }
+        if (r < 0.4)      { lineStatus = 'REJECTED'; issue = pick(ITEM_ISSUES.REJECTED); issueLabel = issue.label; }
+        else if (r < 0.55){ lineStatus = 'BLOCKED';  issue = pick(ITEM_ISSUES.BLOCKED);  issueLabel = issue.label; }
+        else if (r < 0.7) { lineStatus = 'ALERT';    applyAlert(pick(ITEM_ISSUES.ALERTS)); }
       }
 
       const lineValue = qty * unitPrice;
       totalValue += lineValue;
-
-      const ruleId = issue ? ruleIdFor(issue.code) : null;
-      const diagnosticMessage = issue
-        ? diagnosticForIssue(issue, sku.sku, poc.id, poc.name)
-        : '';
 
       items.push({
         lineNumber: li + 1,
@@ -284,27 +265,31 @@ window.EDI_DATA = (function () {
         name: sku.name,
         family: sku.family,
         uom: sku.uom,
+        // Delivered (post-matching) — what BEES will actually fulfil
         qty,
         unitPrice,
         lineValue,
+        // Requested (pre-matching) — what the retailer submitted via EDI
         requestedQty,
         requestedUnitPrice,
         requestedLineValue,
-        status: lineStatus,
-        issueCode: issue ? issue.code : null,
-        issueRule: issue ? issue.rule : null,
+        status: lineStatus,           // OK | PENDING | ALERT | BLOCKED | REJECTED
+        issueCode:  issue ? issue.code : null,
+        issueRule:  issue ? issue.rule : null,
         issueLabel,
-        ruleId,
-        diagnosticMessage,
       });
     }
 
+    // Guarantee the order has *at least one* problem line that matches its status,
+    // applying the same alert helper so the requested/delivered split is consistent.
     function ensureAtLeastOne(targetLineStatus, issueBucket, applyHelper) {
       if (!items.some(it => it.status === targetLineStatus)) {
         const it = pick(items);
         const spec = pick(issueBucket);
         if (applyHelper) {
-          let qty = it.requestedQty; let unitPrice = it.requestedUnitPrice;
+          // Re-derive delivered values from requested using the same logic
+          // as the in-loop helper, then interpolate the user-facing label.
+          let qty = it.requestedQty, unitPrice = it.requestedUnitPrice;
           let vars = { uom: it.uom };
           if (spec.code === 'PRICE_ADJUSTED') {
             unitPrice = Math.max(50, Math.round(it.requestedUnitPrice * (0.85 + rand() * 0.10)));
@@ -333,65 +318,20 @@ window.EDI_DATA = (function () {
         it.status = targetLineStatus;
         it.issueCode = spec.code;
         it.issueRule = spec.rule;
-        it.ruleId = ruleIdFor(spec.code);
-        it.diagnosticMessage = diagnosticForIssue(spec, it.sku, poc.id, poc.name);
       }
     }
-    if (status.id === 'ALERTS') ensureAtLeastOne('ALERT', ITEM_ISSUES.ALERTS, true);
-    if (status.id === 'BLOCKED') ensureAtLeastOne('BLOCKED', ITEM_ISSUES.BLOCKED, false);
+    if (status.id === 'ALERTS')   ensureAtLeastOne('ALERT',    ITEM_ISSUES.ALERTS,   true);
+    if (status.id === 'BLOCKED')  ensureAtLeastOne('BLOCKED',  ITEM_ISSUES.BLOCKED,  false);
     if (status.id === 'REJECTED') ensureAtLeastOne('REJECTED', ITEM_ISSUES.REJECTED, false);
-
-    const problemLines = items.filter(it =>
-      it.status === 'REJECTED' || it.status === 'BLOCKED' || it.status === 'ALERT');
-    const lead = problemLines.sort((a, b) => {
-      const o = { REJECTED: 0, BLOCKED: 1, ALERT: 2 };
-      return (o[a.status] ?? 9) - (o[b.status] ?? 9);
-    })[0];
-    const primaryRuleCategory = lead && lead.issueRule ? lead.issueRule : '';
-    const primaryRuleId = lead && lead.ruleId ? lead.ruleId : '';
-
-    const receivedIso = receivedAt.toISOString();
-    const timeline = [
-      { at: receivedIso, label: 'Received', detail: 'EDI 850 ingested from retailer', actor: 'System' },
-    ];
-    if (status.id !== 'WAITING') {
-      timeline.push({
-        at: new Date(receivedAt.getTime() + 3 * 60000).toISOString(),
-        label: 'Processing started',
-        detail: 'BRE evaluation queued',
-        actor: 'System',
-      });
-    }
-    if (status.id === 'BLOCKED' || status.id === 'REJECTED' || status.id === 'ALERTS') {
-      timeline.push({
-        at: new Date(receivedAt.getTime() + 12 * 60000).toISOString(),
-        label: status.id === 'BLOCKED' ? 'Blocked' : status.id === 'REJECTED' ? 'Rejected' : 'Accepted with alerts',
-        detail: reason || 'Rule outcome applied',
-        actor: 'System',
-      });
-    }
-
-    const resolutionNotes = [];
-    if (rand() < 0.15 && (status.id === 'ALERTS' || status.id === 'ACCEPTED')) {
-      resolutionNotes.push({
-        at: new Date(receivedAt.getTime() + 36 * 60000).toISOString(),
-        author: 'ops.analyst@vendor.com',
-        category: 'catalog fix',
-        text: 'Confirmed SKU mapping after catalog refresh; no further action.',
-      });
-    }
 
     orders.push({
       id: 'EDI-' + String(100000 + i),
-      receivedAt: receivedIso,
+      receivedAt: receivedAt.toISOString(),
       vendorCode: vendor.code,
       vendorName: vendor.name,
       pocId: poc.id,
       pocName: poc.name,
       pocCity: poc.city,
-      retailerChain,
-      region,
-      salesRep,
       poNumber: po,
       beesOrderNumber,
       statusId: status.id,
@@ -402,34 +342,10 @@ window.EDI_DATA = (function () {
       totalValue,
       requestedTotalValue,
       items,
-      primaryRuleCategory,
-      primaryRuleId,
-      slaDeadlineAt,
-      slaUrgent,
-      hoursInBlocked,
-      timeline,
-      resolutionNotes,
     });
   }
+  // Sort newest first
+  orders.sort((a, b) => b.receivedAt.localeCompare(a.receivedAt));
 
-  function priority(o) {
-    if (o.statusId === 'BLOCKED' && o.slaUrgent) return 0;
-    if (o.statusId === 'BLOCKED') return 1;
-    if (o.statusId === 'REJECTED') return 2;
-    if (o.statusId === 'ALERTS') return 3;
-    if (o.statusId === 'WAITING' || o.statusId === 'PROCESSING') return 4;
-    return 5;
-  }
-  orders.sort((a, b) => {
-    const pa = priority(a); const pb = priority(b);
-    if (pa !== pb) return pa - pb;
-    return b.receivedAt.localeCompare(a.receivedAt);
-  });
-
-  const RULE_CATEGORIES = ['UPC Matching', 'Price issue', 'SKU Availability', 'Pack size', 'Credit', 'Delivery window'];
-
-  return {
-    VENDORS, POCS, STATUSES, CATALOG, ITEM_ISSUES, ALERT_REASONS, BLOCKED_REASONS, REJECT_REASONS,
-    RETAILER_CHAINS, REGIONS, SALES_REPS, RULE_CATEGORIES, orders,
-  };
+  return { VENDORS, POCS, STATUSES, CATALOG, ITEM_ISSUES, ALERT_REASONS, BLOCKED_REASONS, REJECT_REASONS, orders };
 })();

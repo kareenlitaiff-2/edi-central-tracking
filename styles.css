@@ -1,87 +1,28 @@
 /* =====================================================================
-   EDI Central Tracker — visual style matching BEES Order History reference
-   Hexa tokens drive colors / type / spacing; this file owns layout.
+   BEES one shell — left rail, top header, brand, landing page
    ===================================================================== */
-
-/* Page background — BEES light grey */
 body { background: #FAFAFA; }
-
-/* Hide the default Hexa topbar — we render our own BEES topbar */
 .hexa-topbar { display: none !important; }
 
-/* =====================================================================
-   BEES one — left rail + compact header (Commercial control reference)
-   ===================================================================== */
 .bees-one-app {
   display: flex;
   min-height: 100vh;
-  align-items: stretch;
 }
 
+/* Left rail */
 .bees-one-rail {
   width: 56px;
   flex-shrink: 0;
   display: flex;
   flex-direction: column;
   align-items: center;
-  background: #ffffff;
+  background: #fff;
   border-right: 1px solid var(--hexa-border-default);
   position: sticky;
   top: 0;
-  align-self: flex-start;
   height: 100vh;
   z-index: 70;
-  padding: var(--hexa-space-xs) 0;
-  box-sizing: border-box;
-}
-.bees-one-rail__stack,
-.bees-one-rail__bottom {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  gap: 4px;
-  width: 100%;
-}
-.bees-one-rail__stack {
-  padding-top: var(--hexa-space-sm);
-}
-.bees-one-rail__spacer {
-  flex: 1;
-  min-height: var(--hexa-space-md);
-}
-.bees-one-rail__bottom {
-  padding-bottom: var(--hexa-space-sm);
-}
-.bees-one-rail__link {
-  width: 44px;
-  height: 44px;
-  border-radius: var(--hexa-radius-md);
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
-  color: var(--hexa-fg-neutral-secondary);
-  text-decoration: none;
-  border: none;
-  background: transparent;
-  cursor: pointer;
-  transition: background-color var(--hexa-duration-fast) var(--hexa-easing),
-    color var(--hexa-duration-fast) var(--hexa-easing);
-}
-.bees-one-rail__link hexa-icon {
-  width: 22px;
-  height: 22px;
-}
-.bees-one-rail__link:hover {
-  background: #f2f2f2;
-  color: var(--hexa-fg-neutral-primary);
-}
-.bees-one-rail__link--active {
-  background: var(--hexa-brand-500);
-  color: #111111;
-}
-.bees-one-rail__link--active:hover {
-  background: var(--hexa-brand-400);
-  color: #111111;
+  padding: 4px 0;
 }
 .bees-one-rail__toggle {
   width: 44px;
@@ -89,100 +30,85 @@ body { background: #FAFAFA; }
   border: none;
   background: transparent;
   cursor: pointer;
-  display: inline-flex;
+  display: flex;
   align-items: center;
   justify-content: center;
   color: var(--hexa-fg-neutral-tertiary);
-  border-radius: var(--hexa-radius-md);
-  margin-bottom: var(--hexa-space-xs);
+  border-radius: 8px;
+  margin-bottom: 4px;
 }
-.bees-one-rail__toggle:hover {
-  background: #f2f2f2;
-  color: var(--hexa-fg-neutral-primary);
+.bees-one-rail__toggle:hover { background: #f2f2f2; color: var(--hexa-fg-neutral-primary); }
+.bees-one-rail__toggle hexa-icon { width: 18px; height: 18px; }
+.bees-one-rail__stack, .bees-one-rail__bottom {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 4px;
+  width: 100%;
 }
-.bees-one-rail__toggle hexa-icon {
-  width: 18px;
-  height: 18px;
+.bees-one-rail__stack { padding-top: 4px; }
+.bees-one-rail__spacer { flex: 1; }
+.bees-one-rail__bottom { padding-bottom: 8px; }
+.bees-one-rail__link {
+  width: 44px;
+  height: 44px;
+  border-radius: 12px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: var(--hexa-fg-neutral-secondary);
+  text-decoration: none;
+  border: none;
+  background: transparent;
+  cursor: pointer;
+  transition: background 0.15s, color 0.15s;
 }
+.bees-one-rail__link hexa-icon { width: 22px; height: 22px; }
+.bees-one-rail__link:hover { background: #f2f2f2; color: var(--hexa-fg-neutral-primary); }
+.bees-one-rail__link--active { background: #FFC000; color: #111; }
+.bees-one-rail__link--active:hover { background: #FFCA28; color: #111; }
 
+/* Main column */
 .bees-one-main-col {
   flex: 1;
   min-width: 0;
   display: flex;
   flex-direction: column;
-  min-height: 100vh;
 }
 
-/* Top bar — tools, BEES one wordmark, notifications, profile */
+/* Top bar */
 .bees-topbar {
-  background: #ffffff;
+  background: #fff;
   border-bottom: 1px solid var(--hexa-border-default);
   position: sticky;
   top: 0;
-  z-index: 60;
-}
-.bees-topbar--one {
   z-index: 55;
 }
 .bees-topbar-inner {
   height: 56px;
-  padding: 0 var(--hexa-space-lg);
+  padding: 0 16px;
   display: flex;
   align-items: center;
-  gap: var(--hexa-space-md);
-  max-width: none;
-  margin: 0;
+  gap: 8px;
 }
-.bees-topbar-spacer {
-  flex: 1;
-}
+.bees-topbar-spacer { flex: 1; }
 .bees-toolbar-btn {
-  width: 40px;
-  height: 40px;
-  border: none;
-  background: transparent;
+  width: 40px; height: 40px;
+  border: none; background: transparent;
   border-radius: 50%;
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
-  cursor: pointer;
-  color: var(--hexa-fg-neutral-primary);
-  flex-shrink: 0;
+  display: flex; align-items: center; justify-content: center;
+  cursor: pointer; color: var(--hexa-fg-neutral-primary);
 }
-.bees-toolbar-btn:hover {
-  background: #f2f2f2;
-}
-.bees-toolbar-btn hexa-icon {
-  width: 22px;
-  height: 22px;
-}
+.bees-toolbar-btn:hover { background: #f2f2f2; }
+.bees-toolbar-btn hexa-icon { width: 22px; height: 22px; }
 
+/* Brand */
 .bees-one-brand {
   display: inline-flex;
   align-items: center;
   gap: 2px;
   text-decoration: none;
   color: inherit;
-  flex-shrink: 0;
-}
-.bees-one-brand__mark {
-  display: inline-flex;
-  align-items: center;
-  line-height: 0;
-}
-.bees-one-brand__mark img {
-  display: block;
-  height: 26px;
-  width: auto;
-}
-.bees-one-brand__product {
-  font-family: var(--hexa-font-header);
-  font-weight: 700;
-  font-size: 1.25rem;
-  letter-spacing: -0.04em;
-  color: var(--hexa-fg-neutral-primary);
-  line-height: 1;
-  transform: translateY(1px);
 }
 .bees-one-brand__bars {
   display: inline-flex;
@@ -194,15 +120,22 @@ body { background: #FAFAFA; }
 .bees-one-brand__bars > span {
   display: block;
   width: 4px;
-  height: 18px;
-  background: #111111;
   border-radius: 1px;
+  background: #111;
 }
 .bees-one-brand__bars > span:nth-child(1) { height: 12px; }
 .bees-one-brand__bars > span:nth-child(2) { height: 18px; }
 .bees-one-brand__bars > span:nth-child(3) { height: 12px; }
 .bees-one-brand__bars > span:nth-child(4) { height: 18px; }
+.bees-one-brand__product {
+  font-weight: 700;
+  font-size: 1.25rem;
+  letter-spacing: -0.04em;
+  color: #111;
+  line-height: 1;
+}
 
+/* Module pill */
 .bees-one-module-pill {
   display: inline-flex;
   align-items: center;
@@ -211,156 +144,104 @@ body { background: #FAFAFA; }
   background: transparent;
   cursor: pointer;
   padding: 4px;
-  border-radius: var(--hexa-radius-pill);
+  border-radius: 999px;
 }
-.bees-one-module-pill:hover {
-  background: #f2f2f2;
-}
+.bees-one-module-pill:hover { background: #f2f2f2; }
 .bees-one-module-pill__icon {
-  width: 28px;
-  height: 28px;
+  width: 28px; height: 28px;
   border-radius: 50%;
   background: #B9F6CA;
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
+  display: flex; align-items: center; justify-content: center;
 }
-.bees-one-module-pill__icon hexa-icon {
-  width: 16px;
-  height: 16px;
-  color: #1B5E20;
-}
-.bees-one-module-pill__caret {
-  width: 14px;
-  height: 14px;
-  color: var(--hexa-fg-neutral-tertiary);
-}
+.bees-one-module-pill__icon hexa-icon { width: 16px; height: 16px; color: #1B5E20; }
+.bees-one-module-pill__caret { width: 14px; height: 14px; color: var(--hexa-fg-neutral-tertiary); }
 
+/* User chip */
 .bees-user-chip {
-  display: inline-flex;
-  align-items: center;
-  gap: 0;
-  height: 40px;
-  padding: 0;
-  border: none;
-  border-radius: 50%;
-  background: #ffffff;
+  width: 36px; height: 36px;
+  border: none; border-radius: 50%;
+  background: transparent;
   cursor: pointer;
-  flex-shrink: 0;
+  padding: 0;
+  display: flex; align-items: center; justify-content: center;
 }
-.bees-user-chip:hover {
-  border-color: var(--hexa-neutral-400);
-}
+.bees-user-chip:hover { background: #f2f2f2; }
 .bees-user-chip__avatar {
-  width: 30px;
-  height: 30px;
+  width: 32px; height: 32px;
   border-radius: 50%;
-  background: #111111;
-  color: #ffffff;
-  font-size: 13px;
+  background: #111;
+  color: #fff;
+  font-size: 12px;
   font-weight: 600;
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
-}
-.bees-user-chip hexa-icon {
-  width: 14px;
-  height: 14px;
-  color: var(--hexa-fg-neutral-tertiary);
+  display: flex; align-items: center; justify-content: center;
 }
 
-/* Legacy topbar pieces (older prototype nav) — kept for any residual class hooks */
-.bees-topbar-row {
-  max-width: 1440px;
-  margin: 0 auto;
-  padding: 0 56px;
+/* Link admin landing */
+.link-admin-page {
   display: flex;
+  flex-direction: column;
   align-items: center;
-  gap: var(--hexa-space-lg);
+  padding-top: 48px;
 }
-.bees-logo {
-  display: inline-flex;
-  align-items: center;
-  flex-shrink: 0;
-  text-decoration: none;
-  height: 28px;
-}
-.bees-logo img {
-  height: 100%;
-  width: auto;
-  display: block;
-}
-.bees-icon-btn {
-  width: 40px;
-  height: 40px;
-  border: none;
-  background: transparent;
-  border-radius: 50%;
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
-  cursor: pointer;
-  color: var(--hexa-fg-neutral-primary);
-  position: relative;
-}
-.bees-icon-btn:hover {
-  background: #f2f2f2;
-}
-.bees-icon-btn hexa-icon {
-  width: 20px;
-  height: 20px;
-}
-.bees-icon-badge {
-  position: absolute;
-  top: 4px;
-  right: 4px;
-  min-width: 16px;
-  height: 16px;
-  background: #2d7dc1;
-  color: #ffffff;
-  font-size: 10px;
-  font-weight: 700;
-  border-radius: 8px;
-  padding: 0 4px;
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
-  border: 2px solid #ffffff;
-  box-sizing: content-box;
-}
-.bees-nav-left,
-.bees-nav-right {
-  display: flex;
-  align-items: center;
-  gap: var(--hexa-space-xl);
-  height: 100%;
-}
-.bees-nav-link {
-  display: inline-flex;
-  align-items: center;
-  gap: var(--hexa-space-2xs);
-  height: 100%;
-  font-size: 14px;
-  font-weight: 500;
-  color: var(--hexa-fg-neutral-primary);
-  text-decoration: none;
-  border-bottom: 2px solid transparent;
-  padding: 0 2px;
-  position: relative;
-}
-.bees-nav-link hexa-icon {
-  width: 14px;
-  height: 14px;
-  color: var(--hexa-fg-neutral-tertiary);
-}
-.bees-nav-link:hover {
-  color: #111111;
-}
-.bees-nav-link--active {
-  border-bottom-color: var(--hexa-brand-500);
-  color: #111111;
+.link-admin-title {
+  font-size: 28px;
   font-weight: 600;
+  letter-spacing: -0.01em;
+  color: var(--hexa-fg-neutral-primary);
+  margin: 0 0 8px;
+  text-align: center;
 }
+.link-admin-subtitle {
+  font-size: 15px;
+  color: var(--hexa-fg-neutral-secondary);
+  margin: 0 0 32px;
+  text-align: center;
+}
+.link-admin-cards {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 16px;
+  width: 100%;
+  max-width: 900px;
+}
+@media (max-width: 900px) { .link-admin-cards { grid-template-columns: repeat(2, 1fr); } }
+@media (max-width: 540px) { .link-admin-cards { grid-template-columns: 1fr; } }
+.link-admin-card {
+  display: flex;
+  align-items: flex-start;
+  gap: 16px;
+  padding: 20px;
+  background: #fff;
+  border: 1px solid var(--hexa-border-default);
+  border-radius: 12px;
+  text-decoration: none;
+  color: inherit;
+  cursor: pointer;
+  transition: border-color 0.15s, box-shadow 0.15s;
+}
+.link-admin-card:hover { border-color: #999; box-shadow: 0 2px 8px rgba(0,0,0,0.06); }
+.link-admin-card__icon {
+  width: 36px; height: 36px;
+  flex-shrink: 0;
+  display: flex; align-items: center; justify-content: center;
+  color: var(--hexa-fg-neutral-secondary);
+}
+.link-admin-card__icon hexa-icon { width: 24px; height: 24px; }
+.link-admin-card__body { display: flex; flex-direction: column; gap: 4px; }
+.link-admin-card__title { font-size: 15px; font-weight: 600; color: var(--hexa-fg-neutral-primary); }
+.link-admin-card__desc { font-size: 13px; color: var(--hexa-fg-neutral-secondary); line-height: 1.4; }
+
+/* Override app-shell for BEES one layout */
+.bees-one-main-col .app-shell {
+  max-width: none;
+  padding: 24px 24px 48px;
+  flex: 1;
+}
+
+/* =====================================================================
+   EDI Central Tracker — visual style matching BEES Order History reference
+   Hexa tokens drive colors / type / spacing; this file owns layout.
+   ===================================================================== */
 
 /* =====================================================================
    PAGE CONTENT
@@ -369,13 +250,6 @@ body { background: #FAFAFA; }
   max-width: 1440px;
   margin: 0 auto;
   padding: var(--hexa-space-xl) 56px var(--hexa-space-3xl);
-}
-.bees-one-main-col > .app-shell {
-  max-width: none;
-  width: 100%;
-  margin: 0;
-  flex: 1;
-  padding: var(--hexa-space-xl) var(--hexa-space-xl) var(--hexa-space-3xl);
 }
 
 .page-title {
@@ -443,8 +317,6 @@ body { background: #FAFAFA; }
   padding: var(--hexa-space-lg);
   margin-top: var(--hexa-space-md);
   display: grid;
-  /* Two explicit rows of three columns each — guarantees Period gets enough
-     room for both date inputs without forcing other fields to overflow. */
   grid-template-columns: repeat(3, 1fr);
   gap: var(--hexa-space-md) var(--hexa-space-lg);
   align-items: end;
@@ -465,10 +337,7 @@ body { background: #FAFAFA; }
   display: flex; gap: var(--hexa-space-sm); align-items: center; flex-wrap: wrap;
 }
 
-/* Multi-select dropdowns.
-   The panel uses position: fixed (positioned by JS) so it ALWAYS sits above
-   sibling cells regardless of grid-cell stacking contexts — that's why the
-   Status panel was previously rendering below the Period inputs. */
+/* Multi-select dropdowns */
 .dropdown { position: relative; }
 .dropdown-trigger {
   display: flex; align-items: center; justify-content: space-between;
@@ -521,8 +390,6 @@ body { background: #FAFAFA; }
 .period-row { display: flex; gap: var(--hexa-space-xs); align-items: center; }
 .period-row .hexa-input-wrap { flex: 1; }
 
-/* Pill all the form controls inside the filter panel for visual consistency
-   with the Account, Filter button, and dropdown triggers. */
 .filters .hexa-input-wrap,
 .filters .hexa-select {
   border-radius: var(--hexa-radius-pill);
@@ -540,7 +407,7 @@ body { background: #FAFAFA; }
 }
 
 /* =====================================================================
-   SUMMARY CARDS — like the reference's "In progress / Needs attention / Delivered"
+   SUMMARY CARDS
    ===================================================================== */
 .summary-cards {
   display: grid;
@@ -548,8 +415,6 @@ body { background: #FAFAFA; }
   gap: var(--hexa-space-sm);
   margin-bottom: var(--hexa-space-xl);
 }
-/* Keep all five cards on a single row down to a tight desktop width.
-   They only stack on tablets (where horizontal real estate truly runs out). */
 @media (max-width: 720px) { .summary-cards { grid-template-columns: repeat(2, minmax(0, 1fr)); } }
 @media (max-width: 420px) { .summary-cards { grid-template-columns: 1fr; } }
 
@@ -565,7 +430,7 @@ body { background: #FAFAFA; }
   position: relative;
   text-align: left;
   font: inherit;
-  min-width: 0;             /* allow truncation inside */
+  min-width: 0;
 }
 .summary-card:hover { border-color: var(--hexa-neutral-400); }
 .summary-card.is-active { border-color: #111111; box-shadow: 0 0 0 1px #111111; }
@@ -605,8 +470,6 @@ body { background: #FAFAFA; }
 .summary-card .filter-link:hover { text-decoration: underline; }
 .summary-card .filter-link.is-active { color: var(--hexa-fg-neutral-primary); font-weight: 600; }
 
-/* Stack the percentage and the count vertically — keeps each card narrow
-   enough that all five fit on one line at typical desktop widths. */
 .summary-card .value-row {
   display: flex;
   flex-direction: column;
@@ -628,12 +491,12 @@ body { background: #FAFAFA; }
 }
 .summary-card .dot-success { background: var(--hexa-status-success); }
 .summary-card .dot-warning { background: var(--hexa-status-warning); }
-.summary-card .dot-error   { background: var(--hexa-status-error); }
-.summary-card .dot-info    { background: var(--hexa-status-info); }
+.summary-card .dot-error { background: var(--hexa-status-error); }
+.summary-card .dot-info { background: var(--hexa-status-info); }
 .summary-card .dot-blocked { background: #7B3FBE; }
 
 /* =====================================================================
-   STATUS PILLS — small, pastel, dot-prefixed (match reference)
+   STATUS PILLS
    ===================================================================== */
 .status-pill {
   display: inline-flex;
@@ -646,7 +509,7 @@ body { background: #FAFAFA; }
   line-height: 16px;
   background: #F2F2F2;
   color: var(--hexa-fg-neutral-primary);
-  white-space: nowrap;        /* Pills must always sit on a single line */
+  white-space: nowrap;
   flex-shrink: 0;
   max-width: 100%;
 }
@@ -659,17 +522,17 @@ body { background: #FAFAFA; }
 .status-pill.is-success::before { background: #2D7D45; }
 .status-pill.is-warning { background: #FFF4E0; color: #8A4F00; }
 .status-pill.is-warning::before { background: #F57C00; }
-.status-pill.is-error   { background: #FDECEC; color: #B0211B; }
+.status-pill.is-error { background: #FDECEC; color: #B0211B; }
 .status-pill.is-error::before { background: #D32F2F; }
-.status-pill.is-info    { background: #E6F0FB; color: #14507A; }
+.status-pill.is-info { background: #E6F0FB; color: #14507A; }
 .status-pill.is-info::before { background: #2D7DC1; }
-.status-pill.is-blocked { background: #EFE7F7; color: #5A2E8E; }   /* purple-violet for on-hold */
+.status-pill.is-blocked { background: #EFE7F7; color: #5A2E8E; }
 .status-pill.is-blocked::before { background: #7B3FBE; }
 .status-pill.is-neutral { background: #F2F2F2; color: #555555; }
 .status-pill.is-neutral::before { background: #888888; }
 
 /* =====================================================================
-   ORDER LIST — matches the reference list-row pattern
+   ORDER LIST
    ===================================================================== */
 .result-bar { margin-bottom: var(--hexa-space-md); }
 .result-bar .chip-row { display: flex; gap: var(--hexa-space-xs); flex-wrap: wrap; align-items: center; }
@@ -677,39 +540,29 @@ body { background: #FAFAFA; }
 
 /* =====================================================================
    ORDERS TABLE
-   ---------------------------------------------------------------------
-   Real table-like layout: a sticky header row above single-line data
-   rows, all sharing the same grid template. The .order-table wrapper
-   becomes horizontally scrollable when the viewport is narrower than
-   the row's natural width — we never wrap a row to multiple lines.
    ===================================================================== */
 .order-table {
   background: var(--hexa-surface-primary);
   border: 1px solid var(--hexa-border-default);
   border-radius: var(--hexa-radius-lg) var(--hexa-radius-lg) 0 0;
-  overflow-x: auto;     /* fall back to horizontal scroll on narrow viewports */
+  overflow-x: auto;
   overflow-y: hidden;
 }
 .order-list {
-  /* Force a min-width so the grid never collapses below the smallest
-     usable layout. Below this width the .order-table scrolls instead. */
   min-width: 1180px;
 }
 
 .order-row {
   display: grid;
-  /* Status pill is wide enough for "Accepted with alerts" without
-     wrapping. Date column fits the full timestamp. PO# and BEES order #
-     are predictable monospace numerics. Account and Vendor are fluid. */
   grid-template-columns:
-    32px                       /* select */
-    180px                      /* status pill */
-    170px                      /* receive date */
-    minmax(220px, 1.6fr)       /* account / POC */
-    minmax(140px, 1fr)         /* vendor */
-    140px                      /* PO number */
-    180px                      /* BEES order number */
-    96px;                      /* row actions (info + reprocess) */
+    32px /* select */
+    180px /* status pill */
+    170px /* receive date */
+    minmax(220px, 1.6fr) /* account / POC */
+    minmax(140px, 1fr) /* vendor */
+    140px /* PO number */
+    180px /* BEES order number */
+    96px; /* row actions (info + reprocess) */
   gap: var(--hexa-space-lg);
   align-items: center;
   padding: var(--hexa-space-md) var(--hexa-space-xl);
@@ -720,8 +573,6 @@ body { background: #FAFAFA; }
 .order-row:last-child { border-bottom: none; }
 .order-row:hover { background: #FAFAFA; }
 
-/* Single-line data cell. No stacked label, no wrapping — overflow is
-   ellipsised so each row stays exactly one line tall. */
 .order-row .cell {
   font-size: 14px;
   color: var(--hexa-fg-neutral-primary);
@@ -756,7 +607,6 @@ body { background: #FAFAFA; }
   font-weight: 400;
 }
 
-/* Header row — sticky inside the scroll container, same grid as data rows. */
 .order-row--head {
   position: sticky;
   top: 0;
@@ -781,7 +631,7 @@ body { background: #FAFAFA; }
 .order-row.flash { animation: hexa-row-flash 1.6s ease-out; }
 
 /* =====================================================================
-   PAGINATION — compact, right-aligned (like reference)
+   PAGINATION
    ===================================================================== */
 .pagination {
   display: flex;
@@ -819,7 +669,7 @@ body { background: #FAFAFA; }
 .page-ellipsis { padding: 0 var(--hexa-space-2xs); color: var(--hexa-fg-neutral-tertiary); }
 
 /* =====================================================================
-   DRAWER (kept from previous iteration, refined sizing)
+   DRAWER
    ===================================================================== */
 .drawer-scrim {
   position: fixed; inset: 0;
@@ -859,7 +709,6 @@ body { background: #FAFAFA; }
   display: flex; justify-content: flex-end; gap: var(--hexa-space-sm);
 }
 
-/* Item-level placeholder */
 .placeholder-state {
   border: 1px dashed var(--hexa-border-default);
   border-radius: var(--hexa-radius-lg);
@@ -869,73 +718,7 @@ body { background: #FAFAFA; }
 }
 
 /* =====================================================================
-   BEES FOOTER
-   ===================================================================== */
-.bees-footer {
-  background: var(--hexa-surface-primary);
-  border-top: 1px solid var(--hexa-border-default);
-  padding: var(--hexa-space-3xl) 56px var(--hexa-space-xl);
-}
-.bees-footer-cols {
-  max-width: 1440px;
-  margin: 0 auto;
-  display: grid;
-  grid-template-columns: repeat(3, 1fr);
-  gap: var(--hexa-space-2xl);
-  padding-bottom: var(--hexa-space-2xl);
-  border-bottom: 1px solid var(--hexa-border-default);
-}
-@media (max-width: 800px) { .bees-footer-cols { grid-template-columns: 1fr; } }
-
-.bees-footer-cols h4 {
-  margin: 0 0 var(--hexa-space-md);
-  font-family: var(--hexa-font-header);
-  font-size: 16px;
-  font-weight: 600;
-  color: var(--hexa-fg-neutral-primary);
-}
-.bees-footer-cols a, .bees-footer-static {
-  display: block;
-  font-size: 14px;
-  color: var(--hexa-fg-neutral-secondary);
-  text-decoration: none;
-  margin-bottom: var(--hexa-space-sm);
-}
-.bees-footer-cols a:hover { color: #111111; text-decoration: underline; }
-
-.bees-footer-brand {
-  max-width: 1440px;
-  margin: 0 auto;
-  padding-top: var(--hexa-space-2xl);
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  gap: var(--hexa-space-sm);
-}
-.bees-footer-logo {
-  height: 36px;
-  width: auto;
-  display: block;
-}
-.bees-footer-copy {
-  margin: 0;
-  font-size: 12px;
-  color: var(--hexa-fg-neutral-secondary);
-  text-align: center;
-  line-height: 1.6;
-}
-.bees-footer-cookie {
-  font-size: 13px;
-  color: var(--hexa-fg-neutral-secondary);
-  text-decoration: none;
-  margin-top: var(--hexa-space-md);
-}
-.bees-footer-cookie:hover { color: #111111; text-decoration: underline; }
-
-/* =====================================================================
-   ORDER DETAILS PAGE — BEES "Order details" pattern.
-   The title band uses the same background as the rest of the page so
-   the heading sits on a continuous neutral surface (no dark contrast).
+   ORDER DETAILS PAGE
    ===================================================================== */
 .order-details-band {
   background: transparent;
@@ -997,8 +780,6 @@ body { background: #FAFAFA; }
   align-items: center;
   gap: var(--hexa-space-sm);
 }
-/* Action buttons on the title band — sit on a light background, so
-   they use the standard dark-on-light styling instead of inverse. */
 .band-btn {
   display: inline-flex;
   align-items: center;
@@ -1028,12 +809,8 @@ body { background: #FAFAFA; }
 .band-btn--primary:hover { background: #333333; }
 .band-btn:disabled { opacity: 0.5; cursor: not-allowed; }
 
-.order-details-body {
-  /* The body sits inside the normal app-shell padding flow (band has
-     already broken out and put us back at the natural content edge). */
-}
+.order-details-body {}
 
-/* Order facts card — appears immediately under the band */
 .order-details-card {
   background: var(--hexa-surface-primary);
   border: 1px solid var(--hexa-border-default);
@@ -1077,14 +854,12 @@ body { background: #FAFAFA; }
 }
 .order-details-grid .mono { font-family: ui-monospace, Menlo, monospace; }
 @media (max-width: 1100px) { .order-details-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); } }
-@media (max-width: 600px)  { .order-details-grid { grid-template-columns: 1fr; } }
+@media (max-width: 600px) { .order-details-grid { grid-template-columns: 1fr; } }
 
 .item-row-issue-text { font-size: 13px; line-height: 18px; }
 
 /* =====================================================================
-   BULK ACTIONS BAR — sits above the order list when reprocessable orders
-   are present and/or selections exist. Sticky-feel without actually
-   sticking, so it stays visually anchored to the list.
+   BULK ACTIONS BAR
    ===================================================================== */
 .bulk-bar {
   display: flex;
@@ -1130,8 +905,7 @@ body { background: #FAFAFA; }
 }
 
 /* =====================================================================
-   ORDER ROW — extended for checkbox column and inline actions.
-   New grid: [select] [status] [date] [account] [vendor] [po#] [actions]
+   ORDER ROW — extended for checkbox column and inline actions
    ===================================================================== */
 .order-row.is-selected { background: #FFFAEB; }
 .order-row.is-selected:hover { background: #FFF4D6; }
@@ -1150,7 +924,6 @@ body { background: #FAFAFA; }
 }
 .cell-select--disabled {
   cursor: default;
-  /* Render a muted placeholder dash so the checkbox column reads as "intentionally empty" */
   position: relative;
 }
 .cell-select--disabled::after {
@@ -1209,8 +982,8 @@ body { background: #FAFAFA; }
 .item-stat-dot { width: 8px; height: 8px; border-radius: 50%; flex-shrink: 0; }
 .item-stat-dot.dot-success { background: var(--hexa-status-success); }
 .item-stat-dot.dot-warning { background: var(--hexa-status-warning); }
-.item-stat-dot.dot-error   { background: var(--hexa-status-error); }
-.item-stat-dot.dot-info    { background: var(--hexa-status-info); }
+.item-stat-dot.dot-error { background: var(--hexa-status-error); }
+.item-stat-dot.dot-info { background: var(--hexa-status-info); }
 .item-stat-dot.dot-blocked { background: #7B3FBE; }
 
 .item-list {
@@ -1226,8 +999,6 @@ body { background: #FAFAFA; }
 }
 .item-row:last-child { border-bottom: none; }
 
-/* List header — sits above the line items, mirrors the BEES "Products"
-   section title pattern. */
 .item-list-header {
   display: flex;
   align-items: baseline;
@@ -1246,15 +1017,12 @@ body { background: #FAFAFA; }
   color: var(--hexa-fg-neutral-tertiary);
 }
 
-/* Main row layout — thumbnail | identity | metrics, on a single line at
-   desktop. The identity column carries the line number, status pill,
-   product name, and SKU metadata stacked vertically. */
 .item-row-main {
   display: grid;
   grid-template-columns:
-    56px                              /* thumbnail */
-    minmax(220px, 2fr)                /* identity */
-    minmax(360px, 2.4fr);             /* metrics */
+    56px /* thumbnail */
+    minmax(220px, 2fr) /* identity */
+    minmax(360px, 2.4fr); /* metrics */
   gap: var(--hexa-space-lg);
   align-items: center;
 }
@@ -1275,8 +1043,8 @@ body { background: #FAFAFA; }
 }
 .item-row--warning .item-thumb { background: linear-gradient(135deg, #FFF4E0 0%, #FFE0B2 100%); color: #8A4F00; }
 .item-row--blocked .item-thumb { background: linear-gradient(135deg, #EFE7F7 0%, #D6C5EC 100%); color: #5A2E8E; }
-.item-row--error   .item-thumb { background: linear-gradient(135deg, #FDECEC 0%, #F5C7C5 100%); color: #B0211B; }
-.item-row--info    .item-thumb { background: linear-gradient(135deg, #E0F0FF 0%, #B8DCF8 100%); color: #1F5BA8; }
+.item-row--error .item-thumb { background: linear-gradient(135deg, #FDECEC 0%, #F5C7C5 100%); color: #B0211B; }
+.item-row--info .item-thumb { background: linear-gradient(135deg, #E0F0FF 0%, #B8DCF8 100%); color: #1F5BA8; }
 
 .item-identity { min-width: 0; display: flex; flex-direction: column; gap: 4px; }
 .item-identity-top {
@@ -1302,9 +1070,6 @@ body { background: #FAFAFA; }
   font-family: ui-monospace, Menlo, monospace;
 }
 
-/* Metrics row — three side-by-side metrics. When a metric diverges
-   (Requested → Delivered), the value cell expands inline to show both
-   numbers separated by an arrow on a single line. */
 .item-metrics {
   display: grid;
   grid-template-columns: 1fr 1fr 1.4fr;
@@ -1353,13 +1118,12 @@ body { background: #FAFAFA; }
   border-radius: var(--hexa-radius-sm);
 }
 
-/* Inline issue note. Sits below the main row, tinted to match status. */
 .item-row-issue {
   display: flex;
   align-items: flex-start;
   gap: var(--hexa-space-sm);
   margin-top: var(--hexa-space-md);
-  margin-left: 72px;     /* aligns under identity column (thumbnail width + gap) */
+  margin-left: 72px;
   padding: var(--hexa-space-sm) var(--hexa-space-md);
   border-radius: var(--hexa-radius-md);
   font-size: 13px;
@@ -1369,7 +1133,7 @@ body { background: #FAFAFA; }
 .item-row-issue hexa-icon { width: 16px; height: 16px; margin-top: 1px; flex-shrink: 0; }
 .item-row--warning .item-row-issue { background: #FFF4E0; color: #8A4F00; }
 .item-row--blocked .item-row-issue { background: #EFE7F7; color: #5A2E8E; }
-.item-row--error   .item-row-issue { background: #FDECEC; color: #B0211B; }
+.item-row--error .item-row-issue { background: #FDECEC; color: #B0211B; }
 
 @media (max-width: 1100px) {
   .item-row-main {
@@ -1384,315 +1148,4 @@ body { background: #FAFAFA; }
 }
 @media (max-width: 600px) {
   .item-row-main .item-metrics { grid-template-columns: 1fr; }
-}
-
-/* =====================================================================
-   EDI Central Tracking — “Commercial control” layout (vendor ops prototype)
-   ===================================================================== */
-.commercial-page {
-  max-width: 1200px;
-  margin: 0 auto;
-}
-.commercial-page__head {
-  display: flex;
-  align-items: center;
-  gap: var(--hexa-space-sm);
-  margin-bottom: var(--hexa-space-md);
-}
-.commercial-page__title {
-  margin: 0;
-}
-.commercial-breadcrumb__link {
-  color: inherit;
-  text-decoration: none;
-}
-.commercial-breadcrumb__link:hover {
-  text-decoration: underline;
-}
-.commercial-breadcrumb__sep {
-  margin: 0 0.35em;
-  opacity: 0.65;
-}
-.commercial-toolbar {
-  display: flex;
-  gap: var(--hexa-space-lg);
-  margin-bottom: var(--hexa-space-xl);
-  flex-wrap: wrap;
-}
-.commercial-toolbar__field {
-  min-width: 200px;
-  flex: 0 1 280px;
-  margin-bottom: 0;
-}
-
-.summary-cards.summary-cards--commercial {
-  grid-template-columns: repeat(3, minmax(0, 1fr));
-}
-@media (max-width: 1100px) {
-  .summary-cards.summary-cards--commercial { grid-template-columns: repeat(2, minmax(0, 1fr)); }
-}
-@media (max-width: 420px) {
-  .summary-cards.summary-cards--commercial { grid-template-columns: 1fr; }
-}
-.summary-card--commercial.is-clickable { cursor: pointer; }
-.summary-card--commercial.is-clickable:hover {
-  border-color: #111111;
-  box-shadow: 0 0 0 1px #111111;
-}
-
-.commercial-page .order-table .order-list {
-  min-width: 960px;
-}
-.order-row--cc {
-  grid-template-columns:
-    32px
-    minmax(168px, 200px)
-    minmax(200px, 1.45fr)
-    minmax(160px, 1fr)
-    minmax(96px, 0.75fr)
-    108px
-    140px;
-  align-items: center;
-  padding-top: var(--hexa-space-lg);
-  padding-bottom: var(--hexa-space-lg);
-}
-.order-row--cc .cell-status {
-  display: flex;
-  align-items: center;
-  gap: 6px;
-}
-.order-row--cc .cell-cc-store,
-.order-row--cc .cell-cc-orders {
-  white-space: normal;
-  display: flex;
-  flex-direction: column;
-  align-items: flex-start;
-  gap: 2px;
-  line-height: 1.35;
-}
-.cc-store-chain {
-  font-size: 11px;
-  text-transform: uppercase;
-  letter-spacing: 0.04em;
-  color: var(--hexa-fg-neutral-tertiary);
-  font-weight: 600;
-}
-.cc-store-name {
-  font-size: 15px;
-  font-weight: 600;
-  color: var(--hexa-fg-neutral-primary);
-}
-.cc-store-id {
-  font-size: 13px;
-  color: var(--hexa-fg-neutral-secondary);
-}
-.cc-store-vendor {
-  font-size: 12px;
-  color: var(--hexa-fg-neutral-tertiary);
-}
-.order-row--cc .cell-val {
-  text-align: right;
-  font-variant-numeric: tabular-nums;
-}
-.row-actions--cc {
-  display: flex;
-  align-items: center;
-  gap: 2px;
-  justify-content: flex-end;
-}
-.row-action--sm {
-  width: 32px;
-  height: 32px;
-  padding: 0;
-  min-width: 32px;
-}
-.cc-chevron {
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
-  width: 36px;
-  height: 36px;
-  margin-left: 2px;
-  padding: 0;
-  border: none;
-  background: transparent;
-  border-radius: var(--hexa-radius-sm);
-  color: var(--hexa-fg-neutral-tertiary);
-  cursor: pointer;
-}
-.cc-chevron:hover {
-  background: #f0f0f0;
-  color: var(--hexa-fg-neutral-primary);
-}
-.cc-chevron hexa-icon {
-  width: 20px;
-  height: 20px;
-}
-
-.sla-urgent {
-  display: inline-flex;
-  color: #D32F2F;
-  flex-shrink: 0;
-}
-.sla-urgent hexa-icon { width: 18px; height: 18px; }
-
-.row-actions--wide {
-  display: flex;
-  gap: 4px;
-  justify-content: flex-end;
-}
-
-.order-drawer .order-drawer-footer {
-  flex-wrap: wrap;
-  justify-content: flex-start;
-  gap: var(--hexa-space-sm);
-}
-
-.ops-rule-list,
-.ops-timeline,
-.ops-notes {
-  margin: 0;
-  padding-left: 1.1rem;
-  font-size: 14px;
-  color: var(--hexa-fg-neutral-primary);
-}
-.ops-timeline li { margin-bottom: var(--hexa-space-sm); }
-
-.item-ops-diag {
-  margin: var(--hexa-space-md) var(--hexa-space-md) var(--hexa-space-md) 72px;
-  padding: var(--hexa-space-md);
-  background: #F7F7F7;
-  border-radius: var(--hexa-radius-md);
-  border-left: 3px solid var(--hexa-brand-500);
-}
-
-.ops-health-grid {
-  display: grid;
-  grid-template-columns: repeat(3, minmax(0, 1fr));
-  gap: var(--hexa-space-md);
-}
-@media (max-width: 900px) {
-  .ops-health-grid { grid-template-columns: 1fr; }
-}
-.ops-kpi h4 { margin: 0 0 var(--hexa-space-sm); font-size: 13px; text-transform: uppercase; letter-spacing: 0.04em; color: var(--hexa-fg-neutral-tertiary); }
-
-.ops-health-charts {
-  display: grid;
-  grid-template-columns: 1fr 1fr;
-  gap: var(--hexa-space-lg);
-}
-@media (max-width: 900px) {
-  .ops-health-charts { grid-template-columns: 1fr; }
-}
-
-.ops-leaderboard {
-  list-style: none;
-  margin: 0;
-  padding: 0;
-}
-.ops-leaderboard li {
-  display: flex;
-  justify-content: space-between;
-  gap: var(--hexa-space-md);
-  padding: var(--hexa-space-sm) 0;
-  border-bottom: 1px solid var(--hexa-border-default);
-  font-size: 14px;
-}
-.ops-leaderboard li strong { font-variant-numeric: tabular-nums; }
-
-.mt-xl { margin-top: var(--hexa-space-xl); }
-.mt-sm { margin-top: var(--hexa-space-sm); }
-
-.bulk-actions { flex-wrap: wrap; }
-
-/* =====================================================================
-   Link admin landing page — module card grid
-   ===================================================================== */
-.link-admin-page {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  padding-top: var(--hexa-space-3xl);
-}
-.link-admin-title {
-  font-family: var(--hexa-font-header);
-  font-size: 28px;
-  font-weight: 600;
-  letter-spacing: -0.01em;
-  color: var(--hexa-fg-neutral-primary);
-  margin: 0 0 var(--hexa-space-xs);
-  text-align: center;
-}
-.link-admin-subtitle {
-  font-size: 15px;
-  color: var(--hexa-fg-neutral-secondary);
-  margin: 0 0 var(--hexa-space-2xl);
-  text-align: center;
-}
-.link-admin-cards {
-  display: grid;
-  grid-template-columns: repeat(3, minmax(0, 1fr));
-  gap: var(--hexa-space-lg);
-  width: 100%;
-  max-width: 900px;
-}
-@media (max-width: 900px) {
-  .link-admin-cards { grid-template-columns: repeat(2, minmax(0, 1fr)); }
-}
-@media (max-width: 540px) {
-  .link-admin-cards { grid-template-columns: 1fr; }
-}
-.link-admin-card {
-  display: flex;
-  align-items: flex-start;
-  gap: var(--hexa-space-md);
-  padding: var(--hexa-space-xl);
-  background: #ffffff;
-  border: 1px solid var(--hexa-border-default);
-  border-radius: var(--hexa-radius-lg);
-  text-decoration: none;
-  color: inherit;
-  transition: border-color var(--hexa-duration-fast) var(--hexa-easing),
-    box-shadow var(--hexa-duration-fast) var(--hexa-easing);
-  cursor: pointer;
-}
-.link-admin-card:hover {
-  border-color: var(--hexa-neutral-400);
-  box-shadow: 0 2px 8px rgba(0,0,0,0.06);
-}
-.link-admin-card__icon {
-  width: 36px;
-  height: 36px;
-  flex-shrink: 0;
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
-  color: var(--hexa-fg-neutral-secondary);
-}
-.link-admin-card__icon hexa-icon {
-  width: 24px;
-  height: 24px;
-}
-.link-admin-card__body {
-  display: flex;
-  flex-direction: column;
-  gap: 4px;
-  min-width: 0;
-}
-.link-admin-card__title {
-  font-size: 15px;
-  font-weight: 600;
-  color: var(--hexa-fg-neutral-primary);
-}
-.link-admin-card__desc {
-  font-size: 13px;
-  color: var(--hexa-fg-neutral-secondary);
-  line-height: 1.4;
-}
-
-/* Breadcrumb home icon sizing */
-.commercial-breadcrumb__link hexa-icon {
-  width: 14px;
-  height: 14px;
-  vertical-align: -2px;
 }
