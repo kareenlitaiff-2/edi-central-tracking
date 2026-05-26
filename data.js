@@ -390,15 +390,16 @@ window.EDI_DATA = (function () {
       // appended at runtime by index.html when the analyst reprocesses /
       // bypasses / adds a note.
       audit: [
-        { ts: receivedAt.toISOString(), event: 'Order received via EDI', actor: 'system' },
+        { ts: receivedAt.toISOString(), eventType: 'received', actorKey: 'actor.system' },
         ...(rule ? [{
           ts: new Date(receivedAt.getTime() + 30 * 1000).toISOString(),
-          event: `${status.label}: ${rule.label}`,
-          actor: 'BRE',
+          eventType: 'status_with_rule',
+          eventData: { statusId: status.id, ruleCode: rule.code },
+          actorKey: 'actor.bre',
         }] : (status.id === 'ACCEPTED' ? [{
           ts: new Date(receivedAt.getTime() + 60 * 1000).toISOString(),
-          event: 'Order accepted into BEES OMS',
-          actor: 'system',
+          eventType: 'accepted_oms',
+          actorKey: 'actor.system',
         }] : [])),
       ],
       // Resolution notes (FR-9). Empty by default; analyst adds notes at runtime.

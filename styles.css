@@ -176,6 +176,98 @@ body { background: #FAFAFA; }
   display: flex; align-items: center; justify-content: center;
 }
 
+/* Language switcher */
+.lang-switch {
+  position: relative;
+  display: inline-flex;
+  align-items: center;
+}
+.lang-switch__trigger {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 6px 10px;
+  border: 1px solid transparent;
+  border-radius: 999px;
+  background: transparent;
+  color: var(--hexa-fg-neutral-primary);
+  font-family: inherit;
+  font-size: 13px;
+  font-weight: 600;
+  letter-spacing: 0.02em;
+  cursor: pointer;
+  transition: background 0.12s ease, border-color 0.12s ease;
+}
+.lang-switch__trigger:hover { background: #f2f2f2; }
+.lang-switch.is-open .lang-switch__trigger {
+  background: #f2f2f2;
+  border-color: var(--hexa-border-default);
+}
+.lang-switch__icon {
+  width: 18px; height: 18px;
+  color: var(--hexa-fg-neutral-secondary);
+}
+.lang-switch__code {
+  line-height: 1;
+}
+.lang-switch__caret {
+  width: 14px; height: 14px;
+  color: var(--hexa-fg-neutral-tertiary);
+  transition: transform 0.15s ease;
+}
+.lang-switch.is-open .lang-switch__caret { transform: rotate(180deg); }
+
+.lang-switch__menu {
+  position: absolute;
+  top: calc(100% + 6px);
+  right: 0;
+  min-width: 180px;
+  background: var(--hexa-surface-primary);
+  border: 1px solid var(--hexa-border-default);
+  border-radius: 12px;
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.12);
+  padding: 6px;
+  z-index: 80;
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+.lang-switch__option {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  width: 100%;
+  padding: 8px 10px;
+  border: none;
+  background: transparent;
+  border-radius: 8px;
+  font-family: inherit;
+  font-size: 14px;
+  color: var(--hexa-fg-neutral-primary);
+  cursor: pointer;
+  text-align: left;
+}
+.lang-switch__option:hover { background: #f6f6f6; }
+.lang-switch__option.is-active { background: #f2f2f2; font-weight: 600; }
+.lang-switch__option-code {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 28px; height: 22px;
+  border-radius: 6px;
+  background: #111;
+  color: #fff;
+  font-size: 11px;
+  font-weight: 700;
+  letter-spacing: 0.04em;
+  flex-shrink: 0;
+}
+.lang-switch__option-name { flex: 1; }
+.lang-switch__option-check {
+  width: 16px; height: 16px;
+  color: var(--hexa-fg-neutral-secondary);
+}
+
 /* Link admin landing */
 .link-admin-page {
   display: flex;
