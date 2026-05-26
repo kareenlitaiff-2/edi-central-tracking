@@ -232,6 +232,9 @@ body { background: #FAFAFA; }
   flex-direction: column;
   gap: 2px;
 }
+/* The class-level `display: flex` above would otherwise win against the
+ * native `[hidden]` rule, leaving the menu open on first paint. */
+.lang-switch__menu[hidden] { display: none; }
 .lang-switch__option {
   display: flex;
   align-items: center;
