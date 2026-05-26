@@ -317,12 +317,15 @@ body { background: #FAFAFA; }
   padding: var(--hexa-space-lg);
   margin-top: var(--hexa-space-md);
   display: grid;
-  grid-template-columns: repeat(3, 1fr);
+  grid-template-columns: repeat(4, 1fr);
   gap: var(--hexa-space-md) var(--hexa-space-lg);
   align-items: end;
 }
-@media (max-width: 900px) { .filters { grid-template-columns: repeat(2, 1fr); } }
-@media (max-width: 560px) { .filters { grid-template-columns: 1fr; } }
+@media (max-width: 1200px) { .filters { grid-template-columns: repeat(3, 1fr); } }
+@media (max-width: 900px)  { .filters { grid-template-columns: repeat(2, 1fr); } }
+@media (max-width: 560px)  { .filters { grid-template-columns: 1fr; } }
+.hexa-field--wide { grid-column: span 2; }
+@media (max-width: 560px) { .hexa-field--wide { grid-column: span 1; } }
 .filters[hidden] { display: none; }
 .filters .filter-actions {
   grid-column: 1 / -1;
@@ -549,20 +552,21 @@ body { background: #FAFAFA; }
   overflow-y: hidden;
 }
 .order-list {
-  min-width: 1180px;
+  min-width: 1380px;
 }
 
 .order-row {
   display: grid;
   grid-template-columns:
     32px /* select */
-    180px /* status pill */
-    170px /* receive date */
-    minmax(220px, 1.6fr) /* account / POC */
-    minmax(140px, 1fr) /* vendor */
-    140px /* PO number */
+    132px /* status pill */
+    160px /* receive date */
+    minmax(220px, 1.6fr) /* POC / chain */
+    minmax(180px, 1.2fr) /* business rule */
+    132px /* PO number */
     180px /* BEES order number */
-    96px; /* row actions (info + reprocess) */
+    120px /* value */
+    96px; /* row actions (info + take action) */
   gap: var(--hexa-space-lg);
   align-items: center;
   padding: var(--hexa-space-md) var(--hexa-space-xl);
@@ -1148,4 +1152,177 @@ body { background: #FAFAFA; }
 }
 @media (max-width: 600px) {
   .item-row-main .item-metrics { grid-template-columns: 1fr; }
+}
+
+/* =====================================================================
+   HLR BEESEDI-51860 alignment — rule badge, rule-specific actions,
+   resolution notes, audit timeline, bulk-rule hint
+   ===================================================================== */
+
+/* Rule badge — used in the table, drawer header, and item page header.
+   Clicking it filters the list by that rule (FR-11 filter shortcut). */
+.rule-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  padding: 3px 10px;
+  border-radius: var(--hexa-radius-pill);
+  font-size: 12px;
+  font-weight: 600;
+  line-height: 16px;
+  white-space: nowrap;
+  border: 1px solid transparent;
+  cursor: pointer;
+  text-align: left;
+  font-family: inherit;
+}
+.rule-badge:hover { filter: brightness(0.95); }
+.rule-badge--blocked  { background: #EFE7F7; color: #5A2E8E; border-color: #DFD0EF; }
+.rule-badge--rejected { background: #FDECEC; color: #B0211B; border-color: #F4C7C7; }
+
+/* New value cell (right-aligned numbers). */
+.order-row .cell-value { text-align: right; font-variant-numeric: tabular-nums; }
+.order-row .cell-rule { display: flex; align-items: center; }
+
+/* Dropdown panel — group header (Blocked vs Rejected rules). */
+.dropdown-panel .opt-group-label {
+  padding: 8px 12px 4px;
+  font-size: 11px;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+  color: var(--hexa-fg-neutral-tertiary);
+}
+
+/* Bulk bar — hint about the pinned rule. */
+.bulk-rule-hint {
+  flex: 1;
+  text-align: center;
+  font-style: italic;
+  color: var(--hexa-fg-neutral-secondary);
+}
+
+/* Drawer — rule-specific action section wrapper. */
+.order-drawer .action-section {
+  background: #FFFCF2;
+  border: 1px solid #F0E5B4;
+  border-radius: var(--hexa-radius-lg);
+  padding: var(--hexa-space-lg);
+}
+.order-drawer .action-section h4 {
+  margin-top: 0;
+  color: var(--hexa-fg-neutral-primary);
+  text-transform: none;
+  font-size: 14px;
+  letter-spacing: 0;
+  font-weight: 600;
+}
+
+/* UPC selector */
+.upc-list { display: flex; flex-direction: column; gap: var(--hexa-space-md); margin-top: var(--hexa-space-md); }
+.upc-row {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 6px;
+  padding: var(--hexa-space-sm) var(--hexa-space-md);
+  background: var(--hexa-surface-primary);
+  border: 1px solid var(--hexa-border-default);
+  border-radius: var(--hexa-radius-md);
+}
+.upc-row .upc-row-line {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--hexa-space-sm);
+  align-items: baseline;
+}
+.upc-row .line-num {
+  font-family: ui-monospace, Menlo, monospace;
+  font-size: 11px;
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+  color: var(--hexa-fg-neutral-tertiary);
+}
+.upc-row .mono { font-family: ui-monospace, Menlo, monospace; }
+
+/* Price choice */
+.price-rows { display: flex; flex-direction: column; gap: 8px; margin-top: var(--hexa-space-md); }
+.price-row {
+  padding: var(--hexa-space-sm) var(--hexa-space-md);
+  background: var(--hexa-surface-primary);
+  border: 1px solid var(--hexa-border-default);
+  border-radius: var(--hexa-radius-md);
+}
+.price-choice {
+  border: none;
+  padding: 0;
+  margin: var(--hexa-space-md) 0 0;
+  display: flex;
+  flex-direction: column;
+  gap: var(--hexa-space-sm);
+}
+.price-choice .hexa-radio {
+  display: flex;
+  align-items: center;
+  gap: var(--hexa-space-sm);
+  padding: var(--hexa-space-sm) var(--hexa-space-md);
+  background: var(--hexa-surface-primary);
+  border: 1px solid var(--hexa-border-default);
+  border-radius: var(--hexa-radius-md);
+  cursor: pointer;
+  font-size: 14px;
+}
+.price-choice .hexa-radio:hover { border-color: #C9C9C9; }
+.price-choice .hexa-radio input[type="radio"]:checked + * ,
+.price-choice .hexa-radio:has(input:checked) {
+  border-color: #111111;
+  background: #FFFEF4;
+}
+
+/* Resolution notes */
+.order-drawer .note-list {
+  list-style: none;
+  margin: 0 0 var(--hexa-space-sm);
+  padding: 0;
+  display: flex;
+  flex-direction: column;
+  gap: var(--hexa-space-sm);
+}
+.note-item {
+  padding: var(--hexa-space-sm) var(--hexa-space-md);
+  background: var(--hexa-surface-primary);
+  border: 1px solid var(--hexa-border-default);
+  border-radius: var(--hexa-radius-md);
+}
+.note-meta {
+  display: flex;
+  align-items: center;
+  gap: var(--hexa-space-sm);
+  margin-bottom: 4px;
+}
+.note-cat { font-size: 11px; text-transform: uppercase; letter-spacing: 0.04em; }
+.note-body { font-size: 13px; line-height: 18px; color: var(--hexa-fg-neutral-primary); }
+
+/* Audit timeline */
+.order-drawer .timeline {
+  list-style: none;
+  margin: 0;
+  padding: 0 0 0 var(--hexa-space-md);
+  border-left: 2px solid var(--hexa-border-default);
+  display: flex;
+  flex-direction: column;
+  gap: var(--hexa-space-sm);
+}
+.timeline-item {
+  position: relative;
+  padding-left: var(--hexa-space-md);
+}
+.timeline-dot {
+  position: absolute;
+  left: -22px;
+  top: 6px;
+  width: 10px;
+  height: 10px;
+  border-radius: 50%;
+  background: #111111;
+  border: 2px solid var(--hexa-surface-primary);
 }

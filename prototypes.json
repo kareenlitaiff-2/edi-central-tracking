@@ -1,44 +1,57 @@
 [
   {
     "id": "edi-central-tracking-ops-tool",
-    "name": "EDI Central Tracking — Operations Tool",
-    "hypothesis": "Ops users will adopt a self-service EDI order tracker inside BEES one Link admin instead of contacting support.",
+    "name": "EDI Central Tracking — Operations (HLR BEESEDI-51860)",
+    "hypothesis": "Vendor ops analysts will resolve blocked/rejected EDI orders within SLA when the Link Admin tool exposes the full pipeline, the firing business rule, and a rule-specific corrective action in one click.",
     "createdAt": "2026-05-12",
+    "updatedAt": "2026-05-26",
+    "hlr": "https://ab-inbev.atlassian.net/wiki/spaces/BLK/pages/6218907975",
     "metrics": [
       {
-        "id": "M1",
-        "name": "Triage-to-resolution flow",
+        "id": "m1",
+        "name": "Triage depth",
         "type": "primary",
-        "threshold": "≥ 50% of sessions that open ≥ 1 item page also complete ≥ 1 reprocess in the same session",
-        "tracks": ["item_page_rendered", "reprocess_completed"]
+        "threshold": "≥ 40% of sessions open ≥ 1 order detail (drawer or item page)",
+        "tracks": ["row-open-items", "row-summary", "order_drawer_opened", "item_page_rendered"]
       },
       {
-        "id": "M2",
-        "name": "Time to first reprocess",
-        "type": "time-to-action",
-        "threshold": "Median < 90s from pageview on #orders to first reprocess_triggered",
-        "tracks": ["pageview", "reprocess_triggered"]
-      },
-      {
-        "id": "M3",
-        "name": "Structured filter adoption",
+        "id": "m2",
+        "name": "Ops filter use",
         "type": "discovery",
-        "threshold": "≥ 70% of sessions apply ≥ 1 filter before opening any order",
-        "tracks": ["filters_applied_explicit", "row-open-items"]
+        "threshold": "≥ 70% of sessions apply ≥ 1 structured filter",
+        "tracks": ["filters_applied_explicit", "summary_card_clicked", "filter_from_rule_badge"]
       },
       {
-        "id": "M4",
-        "name": "Bulk reprocess workflow",
-        "type": "task-completion",
-        "threshold": "≥ 25% of sessions that reprocess anything use the bulk path (≥ 2 orders)",
-        "tracks": ["bulk_select_all_toggled", "bulk_reprocess_completed"]
+        "id": "m3",
+        "name": "Rule-specific action completion",
+        "type": "primary",
+        "threshold": "≥ 60% of drawer opens on Blocked/Rejected orders end with a reprocess_completed event",
+        "tracks": [
+          "drawer-action-poc_not_found",
+          "drawer-action-po_duplicated",
+          "drawer-action-upc_not_found",
+          "drawer-action-price_mismatch",
+          "drawer-action-invalid_packaging",
+          "drawer-action-invalid_delivery_range",
+          "drawer-action-invalid_delivery_window",
+          "drawer-action-min_order_quantity",
+          "drawer-action-max_order_quantity",
+          "reprocess_completed"
+        ]
       },
       {
-        "id": "M5",
-        "name": "Multi-feature depth",
+        "id": "m4",
+        "name": "Bulk workflow adoption",
         "type": "engagement",
-        "threshold": "≥ 40% of sessions use ≥ 3 of: filter, drawer, item page, bulk reprocess",
-        "tracks": ["filters_applied_explicit", "order_drawer_opened", "item_page_rendered", "bulk_reprocess_triggered"]
+        "threshold": "≥ 25% of sessions that reprocess use a bulk-rule path (same-rule batch)",
+        "tracks": ["bulk_select_all_filtered", "bulk_reprocess_triggered", "bulk_reprocess_completed"]
+      },
+      {
+        "id": "m5",
+        "name": "Resolution documentation",
+        "type": "engagement",
+        "threshold": "≥ 30% of sessions that open the drawer add ≥ 1 resolution note (facilitated tests)",
+        "tracks": ["resolution_note_dialog_opened", "resolution_note_added"]
       }
     ]
   },

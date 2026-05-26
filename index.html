@@ -12,7 +12,7 @@
   <script
     src="_shared/hypothesis-tracker.js"
     data-prototype-id="edi-central-tracking-ops-tool"
-    data-hypothesis="Ops users will adopt a self-service EDI order tracker inside BEES one Link admin instead of contacting support."
+    data-hypothesis="Vendor ops resolve EDI failures faster when triage, rule-specific corrective actions, and bulk reprocess live in one Link Admin tool aligned with the four-status / nine-rule taxonomy in HLR BEESEDI-51860."
     data-variant="A"></script>
 </head>
 <body>
@@ -158,6 +158,46 @@
 
             <form class="filters" id="filterForm" autocomplete="off" onsubmit="event.preventDefault();applyFilters()" hidden>
               <div class="hexa-field">
+                <span class="hexa-label">Status</span>
+                <div class="dropdown" id="statusDropdown">
+                  <button type="button" class="dropdown-trigger" data-track="filter-open-status" onclick="toggleDropdown('statusDropdown')">
+                    <span id="statusLabel" class="placeholder">All statuses</span>
+                    <hexa-icon name="ChevronDownIcon"></hexa-icon>
+                  </button>
+                  <div class="dropdown-panel" id="statusPanel"></div>
+                </div>
+              </div>
+              <div class="hexa-field">
+                <span class="hexa-label">Business rule</span>
+                <div class="dropdown" id="ruleDropdown">
+                  <button type="button" class="dropdown-trigger" data-track="filter-open-rule" onclick="toggleDropdown('ruleDropdown')">
+                    <span id="ruleLabel" class="placeholder">All rules</span>
+                    <hexa-icon name="ChevronDownIcon"></hexa-icon>
+                  </button>
+                  <div class="dropdown-panel" id="rulePanel"></div>
+                </div>
+              </div>
+              <div class="hexa-field">
+                <span class="hexa-label">Retailer chain</span>
+                <div class="dropdown" id="chainDropdown">
+                  <button type="button" class="dropdown-trigger" data-track="filter-open-chain" onclick="toggleDropdown('chainDropdown')">
+                    <span id="chainLabel" class="placeholder">All chains</span>
+                    <hexa-icon name="ChevronDownIcon"></hexa-icon>
+                  </button>
+                  <div class="dropdown-panel" id="chainPanel"></div>
+                </div>
+              </div>
+              <div class="hexa-field">
+                <span class="hexa-label">POC</span>
+                <div class="dropdown" id="pocDropdown">
+                  <button type="button" class="dropdown-trigger" data-track="filter-open-poc" onclick="toggleDropdown('pocDropdown')">
+                    <span id="pocLabel" class="placeholder">All POCs</span>
+                    <hexa-icon name="ChevronDownIcon"></hexa-icon>
+                  </button>
+                  <div class="dropdown-panel" id="pocPanel"></div>
+                </div>
+              </div>
+              <div class="hexa-field">
                 <span class="hexa-label">Vendor</span>
                 <div class="dropdown" id="vendorDropdown">
                   <button type="button" class="dropdown-trigger" data-track="filter-open-vendor" onclick="toggleDropdown('vendorDropdown')">
@@ -168,38 +208,38 @@
                 </div>
               </div>
               <div class="hexa-field">
-                <span class="hexa-label">Account / POC</span>
-                <div class="dropdown" id="pocDropdown">
-                  <button type="button" class="dropdown-trigger" data-track="filter-open-poc" onclick="toggleDropdown('pocDropdown')">
-                    <span id="pocLabel" class="placeholder">My POCs (4)</span>
+                <span class="hexa-label">Region / Zone</span>
+                <div class="dropdown" id="regionDropdown">
+                  <button type="button" class="dropdown-trigger" data-track="filter-open-region" onclick="toggleDropdown('regionDropdown')">
+                    <span id="regionLabel" class="placeholder">All regions</span>
                     <hexa-icon name="ChevronDownIcon"></hexa-icon>
                   </button>
-                  <div class="dropdown-panel" id="pocPanel"></div>
+                  <div class="dropdown-panel" id="regionPanel"></div>
                 </div>
               </div>
               <div class="hexa-field">
-                <span class="hexa-label">Purchase order number</span>
+                <span class="hexa-label">Sales rep</span>
+                <div class="dropdown" id="repDropdown">
+                  <button type="button" class="dropdown-trigger" data-track="filter-open-rep" onclick="toggleDropdown('repDropdown')">
+                    <span id="repLabel" class="placeholder">All reps</span>
+                    <hexa-icon name="ChevronDownIcon"></hexa-icon>
+                  </button>
+                  <div class="dropdown-panel" id="repPanel"></div>
+                </div>
+              </div>
+              <div class="hexa-field">
+                <span class="hexa-label">PO number</span>
                 <span class="hexa-input-wrap">
                   <hexa-icon name="SearchIcon"></hexa-icon>
                   <input class="hexa-input" id="poInput" placeholder="e.g. 12345678" inputmode="numeric" />
                 </span>
               </div>
-              <div class="hexa-field">
-                <span class="hexa-label">Period (max 30 days)</span>
+              <div class="hexa-field hexa-field--wide">
+                <span class="hexa-label">Period (max 90 days · default last 30 days)</span>
                 <div class="period-row">
                   <span class="hexa-input-wrap"><input class="hexa-input" id="dateFrom" type="date" /></span>
                   <span class="text-fg-neutral-tertiary">→</span>
                   <span class="hexa-input-wrap"><input class="hexa-input" id="dateTo" type="date" /></span>
-                </div>
-              </div>
-              <div class="hexa-field">
-                <span class="hexa-label">Status</span>
-                <div class="dropdown" id="statusDropdown">
-                  <button type="button" class="dropdown-trigger" data-track="filter-open-status" onclick="toggleDropdown('statusDropdown')">
-                    <span id="statusLabel" class="placeholder">All statuses</span>
-                    <hexa-icon name="ChevronDownIcon"></hexa-icon>
-                  </button>
-                  <div class="dropdown-panel" id="statusPanel"></div>
                 </div>
               </div>
               <div class="filter-actions">
@@ -223,12 +263,13 @@
             <div class="chip-row" id="activeFilters"></div>
           </div>
 
-          <!-- Bulk actions toolbar -->
+          <!-- Bulk actions toolbar (FR-8: bulk reprocess of orders sharing the same blocking rule) -->
           <div class="bulk-bar" id="bulkBar">
             <label class="bulk-select-all">
               <input type="checkbox" id="bulkSelectAll" data-track="bulk-select-all" onchange="toggleSelectAllOnPage(this.checked)" />
               <span id="bulkSelectAllLabel">Select all on this page</span>
             </label>
+            <span class="bulk-rule-hint text-body-xs text-fg-neutral-tertiary" id="bulkRuleHint"></span>
             <div class="bulk-actions">
               <span class="bulk-count" id="bulkCount">0 selected</span>
               <button type="button" class="hexa-btn hexa-btn--tertiary" id="bulkClearBtn" data-track="bulk-clear" onclick="clearSelection()" disabled>Clear selection</button>
@@ -269,13 +310,13 @@
               <div class="order-details-band-row">
                 <h1 class="order-details-title">Order details</h1>
                 <div class="order-details-band-actions">
-                  <button type="button" class="band-btn band-btn--ghost" data-track="item-open-summary" onclick="openDrawer(view.itemPageOrderId)">
-                    <hexa-icon name="InfoIcon"></hexa-icon>
-                    View summary
+                  <button type="button" class="band-btn band-btn--ghost" data-track="item-add-note" onclick="openNoteDialog(view.itemPageOrderId)">
+                    <hexa-icon name="EditIcon"></hexa-icon>
+                    Add resolution note
                   </button>
-                  <button type="button" class="band-btn band-btn--primary" id="itemPageReprocessBtn" data-track="item-reprocess" onclick="reprocessFromItemPage()">
+                  <button type="button" class="band-btn band-btn--primary" id="itemPageActionBtn" data-track="item-take-action" onclick="openDrawer(view.itemPageOrderId)">
                     <hexa-icon name="SyncIcon"></hexa-icon>
-                    Reprocess order
+                    <span id="itemPageActionLabel">Take action</span>
                   </button>
                 </div>
               </div>
@@ -310,58 +351,63 @@
       </button>
     </header>
     <div class="body" id="drawerBody"></div>
-    <footer>
-      <button class="hexa-btn hexa-btn--tertiary" data-track="drawer-cancel" onclick="closeDrawer()">Close</button>
-      <button class="hexa-btn hexa-btn--primary" id="drawerReprocess" data-track="drawer-reprocess" onclick="reprocessFromDrawer()">
-        <hexa-icon name="SyncIcon"></hexa-icon>
-        Reprocess
-      </button>
+    <footer id="drawerFooter">
+      <!-- Populated dynamically by populateDrawer() depending on the rule -->
     </footer>
   </aside>
 
   <script>
   // ============================================================
-  // STATE
+  // STATE — aligned to HLR BEESEDI-51860
   // ============================================================
   const D = window.EDI_DATA;
-  const defaultPocs = () => new Set(D.POCS.filter(p => p.user).map(p => p.id));
-  const draft = {
-    vendors: new Set(),
-    pocs: defaultPocs(),
+
+  // Filter dimensions per HLR FR-2.
+  const FILTER_DIMS = ['statuses', 'rules', 'chains', 'pocs', 'vendors', 'regions', 'salesReps'];
+  const emptyFilterState = () => ({
     statuses: new Set(),
-  };
-  const applied = {
+    rules: new Set(),
+    chains: new Set(),
+    pocs: new Set(),
     vendors: new Set(),
-    pocs: defaultPocs(),
-    poQuery: '',
-    dateFrom: null,
-    dateTo: null,
-    statuses: new Set(),
-  };
+    regions: new Set(),
+    salesReps: new Set(),
+  });
+  const draft   = emptyFilterState();
+  const applied = Object.assign(emptyFilterState(), { poQuery: '', dateFrom: null, dateTo: null });
+
   const view = {
     openOrderId: null,
     itemPageOrderId: null,
     page: 1,
     pageSize: 10,
     selected: new Set(),
+    // For rule-specific drawer actions:
+    drawerSelectedUpcs: {}, // { lineNumber: 'new-upc-string' }
+    drawerPriceChoice: 'bees', // 'bees' | 'requested'
+    drawerRejectedChoice: 'as-is', // 'as-is' | 'bypass'
   };
 
-  const REPROCESSABLE_STATUSES = new Set(['BLOCKED', 'REJECTED', 'ALERTS']);
+  // FR-7: only Blocked and Rejected orders expose a corrective action.
+  const REPROCESSABLE_STATUSES = new Set(['BLOCKED', 'REJECTED']);
   const isReprocessable = (o) => REPROCESSABLE_STATUSES.has(o.statusId);
 
-  // ============================================================
-  // INIT
-  // ============================================================
+  // Replacement UPCs offered when the UPC_NOT_FOUND blocking rule fires.
+  function alternativeUpcs(lineSku) {
+    return D.CATALOG.filter((c) => c.sku !== lineSku).slice(0, 4).map((c) => ({ sku: c.sku, name: c.name }));
+  }
+
+  function fmtMoney(n) { return '$' + n.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 }); }
   function fmtDate(iso) {
     const d = new Date(iso);
     return d.toLocaleDateString(undefined, { day: '2-digit', month: 'short', year: 'numeric' }) + ' ' + d.toLocaleTimeString(undefined, { hour: '2-digit', minute: '2-digit' });
   }
-  function fmtDateOnly(iso) {
-    return new Date(iso).toLocaleDateString(undefined, { day: '2-digit', month: 'short' });
-  }
-  function fmtMoney(n) { return '$' + n.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 }); }
   function isoDay(d) { return d.toISOString().slice(0, 10); }
+  function escapeHtml(s) { return String(s).replace(/[&<>"']/g, (c) => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c])); }
 
+  // ============================================================
+  // INIT — period defaults: last 30 days (default), max 90 days (HLR FR-2)
+  // ============================================================
   (function initPeriod() {
     const today = new Date();
     const from = new Date(today.getTime() - 29 * 86400000);
@@ -371,46 +417,80 @@
     document.getElementById('dateFrom').max = isoDay(today);
     applied.dateFrom = isoDay(from);
     applied.dateTo = isoDay(today);
-    document.getElementById('periodHint').textContent = 'Maximum interval: 30 days · default: last 30 days';
+    document.getElementById('periodHint').textContent = 'Maximum interval: 90 days · default: last 30 days';
   })();
 
-  function renderVendorPanel() {
-    const panel = document.getElementById('vendorPanel');
-    panel.innerHTML = D.VENDORS.map(v => `
-      <label class="opt"><input type="checkbox" value="${v.code}" ${draft.vendors.has(v.code) ? 'checked' : ''} onchange="toggleDraft('vendors', this.value, this.checked)"/> ${v.name}</label>
-    `).join('');
-  }
-  function renderPocPanel(query) {
-    const panel = document.getElementById('pocPanel');
-    const q = (query || '').toLowerCase();
-    const list = D.POCS.filter(p => !q || p.name.toLowerCase().includes(q) || p.id.toLowerCase().includes(q) || p.city.toLowerCase().includes(q));
-    panel.innerHTML = `
-      <div class="search">
-        <span class="hexa-input-wrap">
-          <hexa-icon name="SearchIcon"></hexa-icon>
-          <input class="hexa-input" placeholder="Search POC name, id, city…" oninput="renderPocPanel(this.value)" value="${query || ''}" />
-        </span>
-      </div>
-      ${list.map(p => `
-        <label class="opt">
-          <input type="checkbox" value="${p.id}" ${draft.pocs.has(p.id) ? 'checked' : ''} onchange="toggleDraft('pocs', this.value, this.checked)"/>
-          <span style="flex:1">${p.name}${p.user ? ' <span class=\"hexa-tag hexa-tag--brand\" style=\"margin-left:6px\">Yours</span>' : ''}</span>
-          <span class="text-body-xs text-fg-neutral-tertiary">${p.id} · ${p.city}</span>
-        </label>
-      `).join('') || '<div class="text-body-sm text-fg-neutral-tertiary p-sm">No POC matches.</div>'}
-    `;
+  // ----------------------------------------------------------------
+  // Filter dropdown panels — one renderer per dimension.
+  // ----------------------------------------------------------------
+  function optionRow(value, label, checked, onChange, suffix) {
+    return `<label class="opt">
+      <input type="checkbox" value="${value}" ${checked ? 'checked' : ''} onchange="${onChange}" />
+      <span style="flex:1">${label}</span>
+      ${suffix || ''}
+    </label>`;
   }
   function renderStatusPanel() {
-    const panel = document.getElementById('statusPanel');
-    panel.innerHTML = D.STATUSES.map(s => `
+    document.getElementById('statusPanel').innerHTML = D.STATUSES.map((s) => `
       <label class="opt"><input type="checkbox" value="${s.id}" ${draft.statuses.has(s.id) ? 'checked' : ''} onchange="toggleDraft('statuses', this.value, this.checked)"/>
         <span class="hexa-status-badge hexa-status-badge--${s.tone}">${s.label}</span>
       </label>
     `).join('');
   }
-  renderVendorPanel();
-  renderPocPanel('');
-  renderStatusPanel();
+  function renderRulePanel() {
+    const blockedRules = D.BLOCKING_RULES.map((r) => optionRow(r.code, escapeHtml(r.label), draft.rules.has(r.code), `toggleDraft('rules','${r.code}', this.checked)`));
+    const rejectedRules = D.REJECTING_RULES.map((r) => optionRow(r.code, escapeHtml(r.label), draft.rules.has(r.code), `toggleDraft('rules','${r.code}', this.checked)`));
+    document.getElementById('rulePanel').innerHTML = `
+      <div class="opt-group-label">Blocked</div>
+      ${blockedRules.join('')}
+      <div class="opt-group-label">Rejected</div>
+      ${rejectedRules.join('')}
+    `;
+  }
+  function renderChainPanel() {
+    document.getElementById('chainPanel').innerHTML = D.CHAINS.map((c) =>
+      optionRow(c.code, escapeHtml(c.name), draft.chains.has(c.code), `toggleDraft('chains','${c.code}', this.checked)`)
+    ).join('');
+  }
+  function renderPocPanel(query) {
+    const q = (query || '').toLowerCase();
+    const list = D.POCS.filter((p) => !q || p.name.toLowerCase().includes(q) || p.id.toLowerCase().includes(q) || p.city.toLowerCase().includes(q));
+    document.getElementById('pocPanel').innerHTML = `
+      <div class="search">
+        <span class="hexa-input-wrap">
+          <hexa-icon name="SearchIcon"></hexa-icon>
+          <input class="hexa-input" placeholder="Search POC name, id, city…" oninput="renderPocPanel(this.value)" value="${escapeHtml(query || '')}" />
+        </span>
+      </div>
+      ${list.map((p) => `
+        <label class="opt">
+          <input type="checkbox" value="${p.id}" ${draft.pocs.has(p.id) ? 'checked' : ''} onchange="toggleDraft('pocs','${p.id}', this.checked)"/>
+          <span style="flex:1">${escapeHtml(p.name)}</span>
+          <span class="text-body-xs text-fg-neutral-tertiary">${p.id} · ${escapeHtml(p.city)}</span>
+        </label>
+      `).join('') || '<div class="text-body-sm text-fg-neutral-tertiary p-sm">No POC matches.</div>'}
+    `;
+  }
+  function renderVendorPanel() {
+    document.getElementById('vendorPanel').innerHTML = D.VENDORS.map((v) =>
+      optionRow(v.code, escapeHtml(v.name), draft.vendors.has(v.code), `toggleDraft('vendors','${v.code}', this.checked)`)
+    ).join('');
+  }
+  function renderRegionPanel() {
+    document.getElementById('regionPanel').innerHTML = D.REGIONS.map((r) =>
+      optionRow(r.code, escapeHtml(r.name), draft.regions.has(r.code), `toggleDraft('regions','${r.code}', this.checked)`)
+    ).join('');
+  }
+  function renderRepPanel() {
+    document.getElementById('repPanel').innerHTML = D.SALES_REPS.map((r) =>
+      optionRow(r.id, escapeHtml(r.name), draft.salesReps.has(r.id), `toggleDraft('salesReps','${r.id}', this.checked)`)
+    ).join('');
+  }
+  function renderAllPanels() {
+    renderStatusPanel(); renderRulePanel(); renderChainPanel(); renderPocPanel('');
+    renderVendorPanel(); renderRegionPanel(); renderRepPanel();
+  }
+  renderAllPanels();
 
   function toggleDraft(key, value, on) {
     if (on) draft[key].add(value); else draft[key].delete(value);
@@ -425,26 +505,28 @@
     return true;
   }
   function isDirty() {
-    return !setsEqual(draft.vendors, applied.vendors)
-        || !setsEqual(draft.pocs, applied.pocs)
-        || !setsEqual(draft.statuses, applied.statuses);
+    return FILTER_DIMS.some((d) => !setsEqual(draft[d], applied[d]));
   }
   function markDirty() {
     document.getElementById('applyBtn').classList.toggle('is-dirty', isDirty());
   }
 
+  function labelForCount(count, singular, plural, allLabel) {
+    return count ? (count + ' ' + (count > 1 ? plural : singular)) : allLabel;
+  }
   function syncDropdownLabels() {
-    const vCount = draft.vendors.size;
-    document.getElementById('vendorLabel').className = vCount ? '' : 'placeholder';
-    document.getElementById('vendorLabel').textContent = vCount ? (vCount + ' vendor' + (vCount > 1 ? 's' : '')) : 'All vendors';
-
-    const pCount = draft.pocs.size;
-    document.getElementById('pocLabel').className = pCount ? '' : 'placeholder';
-    document.getElementById('pocLabel').textContent = pCount ? (pCount + ' POC' + (pCount > 1 ? 's' : '')) : 'All POCs';
-
-    const sCount = draft.statuses.size;
-    document.getElementById('statusLabel').className = sCount ? '' : 'placeholder';
-    document.getElementById('statusLabel').textContent = sCount ? (sCount + ' status' + (sCount > 1 ? 'es' : '')) : 'All statuses';
+    const set = (id, count, sing, plur, allLabel) => {
+      const el = document.getElementById(id);
+      el.className = count ? '' : 'placeholder';
+      el.textContent = labelForCount(count, sing, plur, allLabel);
+    };
+    set('statusLabel',  draft.statuses.size,  'status',  'statuses', 'All statuses');
+    set('ruleLabel',    draft.rules.size,     'rule',    'rules',    'All rules');
+    set('chainLabel',   draft.chains.size,    'chain',   'chains',   'All chains');
+    set('pocLabel',     draft.pocs.size,      'POC',     'POCs',     'All POCs');
+    set('vendorLabel',  draft.vendors.size,   'vendor',  'vendors',  'All vendors');
+    set('regionLabel',  draft.regions.size,   'region',  'regions',  'All regions');
+    set('repLabel',     draft.salesReps.size, 'rep',     'reps',     'All reps');
   }
   syncDropdownLabels();
 
@@ -486,10 +568,10 @@
     const to = new Date(toEl.value);
     const diffDays = Math.round((to - from) / 86400000);
     if (diffDays < 0) { toEl.value = fromEl.value; }
-    if (diffDays > 30) {
-      const capped = new Date(from.getTime() + 30 * 86400000);
+    if (diffDays > 90) {
+      const capped = new Date(from.getTime() + 90 * 86400000);
       toEl.value = isoDay(capped);
-      flashHint('Period capped at 30 days.');
+      flashHint('Period capped at 90 days (ops scope).');
     }
     applied.dateFrom = fromEl.value;
     applied.dateTo = toEl.value;
@@ -513,15 +595,13 @@
   });
 
   function applyFilters() {
-    applied.vendors = new Set(draft.vendors);
-    applied.pocs = new Set(draft.pocs);
-    applied.statuses = new Set(draft.statuses);
+    FILTER_DIMS.forEach((d) => { applied[d] = new Set(draft[d]); });
     view.page = 1;
     markDirty();
+    const dims = FILTER_DIMS.filter((d) => applied[d].size);
     HT.track('filters_applied_explicit', {
-      vendor_count: applied.vendors.size,
-      poc_count: applied.pocs.size,
-      status_count: applied.statuses.size,
+      filter_dimensions: dims,
+      filter_count: dims.length,
       has_po: !!applied.poQuery,
       days: Math.round((new Date(applied.dateTo) - new Date(applied.dateFrom)) / 86400000) + 1,
     });
@@ -529,12 +609,7 @@
   }
 
   function clearFilters() {
-    draft.vendors.clear();
-    draft.pocs = defaultPocs();
-    draft.statuses.clear();
-    applied.vendors.clear();
-    applied.pocs = defaultPocs();
-    applied.statuses.clear();
+    FILTER_DIMS.forEach((d) => { draft[d].clear(); applied[d].clear(); });
     applied.poQuery = '';
     document.getElementById('poInput').value = '';
     const today = new Date();
@@ -542,24 +617,28 @@
     document.getElementById('dateFrom').value = isoDay(new Date(today.getTime() - 29 * 86400000));
     applied.dateFrom = document.getElementById('dateFrom').value;
     applied.dateTo = document.getElementById('dateTo').value;
-    renderVendorPanel(); renderPocPanel(''); renderStatusPanel();
+    renderAllPanels();
     syncDropdownLabels();
     markDirty();
     view.page = 1;
     renderTable();
-    HT.track('filters_cleared');
+    HT.track('filters_cleared', { cleared_from: 'button' });
   }
 
   // ============================================================
-  // TABLE
+  // FILTERED ORDERS — applies every active filter dimension
   // ============================================================
   function filteredOrders(opts = {}) {
     const fromTs = applied.dateFrom ? new Date(applied.dateFrom).getTime() : 0;
     const toTs = applied.dateTo ? new Date(applied.dateTo).getTime() + 86400000 - 1 : Infinity;
     return D.orders.filter((o) => {
-      if (applied.vendors.size && !applied.vendors.has(o.vendorCode)) return false;
-      if (applied.pocs.size && !applied.pocs.has(o.pocId)) return false;
       if (!opts.ignoreStatus && applied.statuses.size && !applied.statuses.has(o.statusId)) return false;
+      if (applied.rules.size && (!o.ruleCode || !applied.rules.has(o.ruleCode))) return false;
+      if (applied.chains.size && !applied.chains.has(o.chainCode)) return false;
+      if (applied.pocs.size && !applied.pocs.has(o.pocId)) return false;
+      if (applied.vendors.size && !applied.vendors.has(o.vendorCode)) return false;
+      if (applied.regions.size && !applied.regions.has(o.pocRegion)) return false;
+      if (applied.salesReps.size && !applied.salesReps.has(o.salesRepId)) return false;
       if (applied.poQuery && !o.poNumber.includes(applied.poQuery)) return false;
       const t = new Date(o.receivedAt).getTime();
       if (t < fromTs || t > toTs) return false;
@@ -573,9 +652,7 @@
     view.page = 1;
     syncDropdownLabels();
     markDirty();
-    if (key === 'vendors') renderVendorPanel();
-    if (key === 'pocs')    renderPocPanel('');
-    if (key === 'statuses') renderStatusPanel();
+    renderAllPanels();
     renderTable();
     HT.track('filter_chip_removed', { filter: key });
   }
@@ -587,27 +664,65 @@
     HT.track('filter_chip_removed', { filter: 'po_number' });
   }
 
+  function chipFor(dim, value, label) {
+    return `<button class="hexa-chip" data-track="chip-remove-${dim}" onclick="removeAppliedFilter('${dim}','${escapeHtml(value)}')"><hexa-icon name="CloseIcon"></hexa-icon> ${escapeHtml(label)}</button>`;
+  }
   function renderActiveFilterChips() {
     const root = document.getElementById('activeFilters');
     const chips = [];
-    applied.vendors.forEach((v) => {
-      const name = D.VENDORS.find(x => x.code === v)?.name || v;
-      chips.push(`<button class="hexa-chip" onclick="removeAppliedFilter('vendors','${v}')"><hexa-icon name="CloseIcon"></hexa-icon> ${name}</button>`);
-    });
     applied.statuses.forEach((s) => {
-      const st = D.STATUSES.find(x => x.id === s);
-      chips.push(`<button class="hexa-chip" onclick="removeAppliedFilter('statuses','${s}')"><hexa-icon name="CloseIcon"></hexa-icon> ${st.label}</button>`);
+      const st = D.STATUSES.find((x) => x.id === s);
+      if (st) chips.push(chipFor('statuses', s, st.label));
     });
-    if (applied.poQuery) {
-      chips.push(`<button class="hexa-chip" onclick="clearPoQuery()"><hexa-icon name="CloseIcon"></hexa-icon> PO: ${applied.poQuery}</button>`);
-    }
-    const dPocs = [...defaultPocs()];
-    const pocsArr = [...applied.pocs];
-    const isDefaultSel = pocsArr.length === dPocs.length && pocsArr.every(p => dPocs.includes(p));
-    if (!isDefaultSel && applied.pocs.size) {
+    applied.rules.forEach((r) => {
+      const rule = D.RULE_BY_CODE[r];
+      if (rule) chips.push(chipFor('rules', r, rule.label));
+    });
+    applied.chains.forEach((c) => {
+      const ch = D.CHAINS.find((x) => x.code === c);
+      if (ch) chips.push(chipFor('chains', c, ch.name));
+    });
+    if (applied.pocs.size) {
       chips.push(`<span class="hexa-chip" style="cursor:default">${applied.pocs.size} POC${applied.pocs.size > 1 ? 's' : ''} selected</span>`);
     }
+    applied.vendors.forEach((v) => {
+      const ve = D.VENDORS.find((x) => x.code === v);
+      if (ve) chips.push(chipFor('vendors', v, ve.name));
+    });
+    applied.regions.forEach((rg) => {
+      const re = D.REGIONS.find((x) => x.code === rg);
+      if (re) chips.push(chipFor('regions', rg, re.name));
+    });
+    applied.salesReps.forEach((rp) => {
+      const re = D.SALES_REPS.find((x) => x.id === rp);
+      if (re) chips.push(chipFor('salesReps', rp, re.name));
+    });
+    if (applied.poQuery) {
+      chips.push(`<button class="hexa-chip" data-track="chip-remove-po" onclick="clearPoQuery()"><hexa-icon name="CloseIcon"></hexa-icon> PO: ${escapeHtml(applied.poQuery)}</button>`);
+    }
+    document.getElementById('resultBar').hidden = chips.length === 0;
     root.innerHTML = chips.join('');
+  }
+
+  // ============================================================
+  // Filter-by-rule shortcut — used from drawer / item page badges.
+  // ============================================================
+  function filterByRule(ruleCode, source) {
+    applied.rules = new Set([ruleCode]);
+    draft.rules = new Set([ruleCode]);
+    // Also clamp status to the matching one for clearer triage.
+    const rule = D.RULE_BY_CODE[ruleCode];
+    if (rule) {
+      applied.statuses = new Set([rule.status]);
+      draft.statuses = new Set([rule.status]);
+    }
+    view.page = 1;
+    renderAllPanels();
+    syncDropdownLabels();
+    markDirty();
+    HT.track('filter_from_rule_badge', { rule_category: ruleCode, from_view: source || 'unknown' });
+    closeDrawer();
+    location.hash = '#orders';
   }
 
   // ============================================================
@@ -623,34 +738,39 @@
   }
 
   function statusPill(o) {
-    const map = { success: 'is-success', warning: 'is-warning', error: 'is-error', info: 'is-info', blocked: 'is-blocked' };
+    const map = { success: 'is-success', error: 'is-error', info: 'is-info', blocked: 'is-blocked' };
     return `<span class="status-pill ${map[o.statusTone] || 'is-neutral'}">${o.statusLabel}</span>`;
+  }
+  function ruleBadge(ruleCode, source) {
+    if (!ruleCode) return '<span class="text-fg-neutral-tertiary">—</span>';
+    const r = D.RULE_BY_CODE[ruleCode];
+    if (!r) return '—';
+    return `<button class="rule-badge rule-badge--${r.status.toLowerCase()}" data-track="rule-badge-click" onclick="event.stopPropagation();filterByRule('${r.code}','${source || 'row'}')" title="Filter the list by this rule">${escapeHtml(r.label)}</button>`;
   }
 
   // ============================================================
-  // SUMMARY KPI CARDS
+  // SUMMARY KPI CARDS — exactly the 4 HLR statuses
   // ============================================================
   function renderSummary() {
     const orders = filteredOrders({ ignoreStatus: true });
-    const total = orders.length || 1;
-    const counts = { ACCEPTED: 0, ALERTS: 0, BLOCKED: 0, REJECTED: 0, PENDING: 0 };
+    const counts = { ACCEPTED: 0, BLOCKED: 0, REJECTED: 0, IN_QUEUE: 0 };
     for (const o of orders) {
-      if (o.statusId === 'ACCEPTED') counts.ACCEPTED++;
-      else if (o.statusId === 'ALERTS') counts.ALERTS++;
-      else if (o.statusId === 'BLOCKED') counts.BLOCKED++;
-      else if (o.statusId === 'REJECTED') counts.REJECTED++;
-      else counts.PENDING++;
+      counts[o.statusId] = (counts[o.statusId] || 0) + 1;
     }
+    const totalForRate = orders.length || 1;
+    const acceptanceRate = Math.round((counts.ACCEPTED / totalForRate) * 100);
     const cards = [
-      { id: 'ACCEPTED', label: 'Accepted',             tone: 'success', count: counts.ACCEPTED, filterIds: ['ACCEPTED'] },
-      { id: 'ALERTS',   label: 'Needs attention',      tone: 'warning', count: counts.ALERTS,   filterIds: ['ALERTS'] },
-      { id: 'BLOCKED',  label: 'Blocked',              tone: 'blocked', count: counts.BLOCKED,  filterIds: ['BLOCKED'] },
-      { id: 'REJECTED', label: 'Rejected',             tone: 'error',   count: counts.REJECTED, filterIds: ['REJECTED'] },
-      { id: 'PENDING',  label: 'In queue',             tone: 'info',    count: counts.PENDING,  filterIds: ['WAITING','PROCESSING'] },
+      { id: 'ACCEPTED', label: 'Accepted', tone: 'success', count: counts.ACCEPTED, filterId: 'ACCEPTED' },
+      { id: 'BLOCKED',  label: 'Blocked',  tone: 'blocked', count: counts.BLOCKED,  filterId: 'BLOCKED'  },
+      { id: 'REJECTED', label: 'Rejected', tone: 'error',   count: counts.REJECTED, filterId: 'REJECTED' },
+      { id: 'IN_QUEUE', label: 'In queue', tone: 'info',    count: counts.IN_QUEUE, filterId: 'IN_QUEUE' },
     ];
     document.getElementById('summaryCards').innerHTML = cards.map((c) => {
-      const isActive = c.filterIds.length === applied.statuses.size && c.filterIds.every(s => applied.statuses.has(s));
+      const isActive = applied.statuses.size === 1 && applied.statuses.has(c.filterId);
       const pct = orders.length ? Math.round((c.count / orders.length) * 100) : 0;
+      const extraLine = c.id === 'ACCEPTED'
+        ? `<span class="of">Acceptance rate: <strong>${acceptanceRate}%</strong></span>`
+        : `<span class="of">${c.count.toLocaleString()} of ${orders.length.toLocaleString()}</span>`;
       return `
         <div class="summary-card ${isActive ? 'is-active' : ''}" title="${c.label} — ${c.count.toLocaleString()} of ${orders.length.toLocaleString()}">
           <div class="header-row">
@@ -660,28 +780,28 @@
             </span>
             <button type="button" class="filter-link ${isActive ? 'is-active' : ''}"
               data-track="summary-card-${c.id.toLowerCase()}"
-              onclick="toggleSummaryFilter(${JSON.stringify(c.filterIds).replace(/"/g, '&quot;')}, '${c.id}')">
+              onclick="toggleSummaryFilter('${c.filterId}')">
               ${isActive ? 'Clear' : 'Filter'}
             </button>
           </div>
           <div class="value-row">
             <span class="pct">${pct}%</span>
-            <span class="of">${c.count.toLocaleString()} of ${orders.length.toLocaleString()}</span>
+            ${extraLine}
           </div>
         </div>
       `;
     }).join('');
   }
 
-  function toggleSummaryFilter(statusIds, summaryId) {
-    const sameSet = statusIds.length === applied.statuses.size && statusIds.every(s => applied.statuses.has(s));
-    applied.statuses = new Set(sameSet ? [] : statusIds);
+  function toggleSummaryFilter(statusId) {
+    const isActive = applied.statuses.size === 1 && applied.statuses.has(statusId);
+    applied.statuses = new Set(isActive ? [] : [statusId]);
     draft.statuses = new Set(applied.statuses);
     renderStatusPanel();
     syncDropdownLabels();
     markDirty();
     view.page = 1;
-    HT.track('summary_card_clicked', { card: summaryId, on: !sameSet });
+    HT.track('summary_card_clicked', { card: statusId, on: !isActive });
     renderTable();
   }
 
@@ -694,6 +814,7 @@
       wrap.innerHTML = '';
       const tpl = document.getElementById('emptyTpl');
       wrap.appendChild(tpl.content.cloneNode(true));
+      document.getElementById('bulkBar').hidden = true;
       return;
     }
 
@@ -716,11 +837,11 @@
            </label>`
         : `<span class="cell-select cell-select--disabled" title="${o.statusLabel} orders can't be reprocessed"></span>`;
 
-      const reprocessBtn = selectable
+      const actionBtn = selectable
         ? `<button type="button" class="row-action row-action--primary"
-                 data-track="row-reprocess-${o.statusId.toLowerCase()}"
-                 onclick="event.stopPropagation();reprocessOrder('${o.id}')"
-                 title="Reprocess this order">
+                 data-track="row-take-action-${o.statusId.toLowerCase()}"
+                 onclick="event.stopPropagation();openDrawer('${o.id}')"
+                 title="Take corrective action">
              <hexa-icon name="SyncIcon"></hexa-icon>
            </button>`
         : '';
@@ -736,14 +857,15 @@
           <div class="cell cell-status">${statusPill(o)}</div>
           <div class="cell cell-date">${fmtDate(o.receivedAt)}</div>
           <div class="cell cell-account">
-            <span class="cell-account-name">${o.pocName}</span>
-            <span class="cell-account-id">${o.pocId}</span>
+            <span class="cell-account-name">${escapeHtml(o.pocName)}</span>
+            <span class="cell-account-id">${o.pocId} · ${escapeHtml(o.chainName)}</span>
           </div>
-          <div class="cell cell-vendor">${o.vendorName}</div>
+          <div class="cell cell-rule">${ruleBadge(o.ruleCode, 'row')}</div>
           <div class="cell cell-po mono">${o.poNumber}</div>
           <div class="cell cell-bees mono">${o.beesOrderNumber
               ? o.beesOrderNumber
-              : `<span class="muted">—</span>`}</div>
+              : `<span class="muted">Not yet assigned</span>`}</div>
+          <div class="cell cell-value">${fmtMoney(o.totalValue)}</div>
           <div class="row-actions" onclick="event.stopPropagation()">
             <button type="button" class="row-action"
                     data-track="row-summary"
@@ -751,7 +873,7 @@
                     title="View order summary">
               <hexa-icon name="InfoIcon"></hexa-icon>
             </button>
-            ${reprocessBtn}
+            ${actionBtn}
           </div>
         </div>
       `;
@@ -762,10 +884,11 @@
         <div class="cell-select cell-select--head" aria-hidden="true"></div>
         <div class="cell cell-status">Status</div>
         <div class="cell cell-date">Receive date</div>
-        <div class="cell cell-account">Account / POC</div>
-        <div class="cell cell-vendor">Vendor</div>
+        <div class="cell cell-account">POC / Chain</div>
+        <div class="cell cell-rule">Business rule</div>
         <div class="cell cell-po">PO number</div>
         <div class="cell cell-bees">BEES order number</div>
+        <div class="cell cell-value">Value</div>
         <div class="row-actions"></div>
       </div>
     `;
@@ -828,73 +951,94 @@
   renderTable();
 
   // ============================================================
-  // REPROCESS (mock)
+  // REPROCESS — rule-specific corrective actions (HLR Blocked + Rejected tables)
+  //
+  // Outcome model (mock):
+  //   • POC_NOT_FOUND / INVALID_PACKAGING → 60% Accepted, 40% Blocked again (same rule)
+  //   • PO_DUPLICATED                     → 90% Accepted (bypass works almost always)
+  //   • UPC_NOT_FOUND (with chosen UPCs)  → 85% Accepted, 15% Blocked again
+  //   • PRICE_MISMATCH (with chosen price)→ 95% Accepted (bypassed validation)
+  //   • Rejected rules — reprocess as-is  → 30% Accepted, 70% Rejected again
+  //   • Rejected rules — bypass rule      → 90% Accepted, 10% Rejected again
   // ============================================================
-  function applyReprocessOutcome(o) {
-    const r = Math.random();
-    if (r < 0.50) {
-      o.statusId = 'ACCEPTED';  o.statusLabel = 'Accepted';
-      o.statusTone = 'success'; o.reason = '';
-    } else if (r < 0.75) {
-      o.statusId = 'ALERTS';    o.statusLabel = 'Accepted with alerts';
-      o.statusTone = 'warning'; o.reason = D.ALERT_REASONS[Math.floor(Math.random() * D.ALERT_REASONS.length)];
-    } else if (r < 0.90) {
-      o.statusId = 'BLOCKED';   o.statusLabel = 'Blocked';
-      o.statusTone = 'blocked'; o.reason = D.BLOCKED_REASONS[Math.floor(Math.random() * D.BLOCKED_REASONS.length)];
-    } else {
-      o.statusId = 'REJECTED';  o.statusLabel = 'Rejected';
-      o.statusTone = 'error';   o.reason = D.REJECT_REASONS[Math.floor(Math.random() * D.REJECT_REASONS.length)];
+  function ruleOutcomeProbabilities(ruleCode, action) {
+    if (ruleCode === 'PO_DUPLICATED')    return { accepted: 0.90, blocked: 0, rejected: 0.10 };
+    if (ruleCode === 'PRICE_MISMATCH')   return { accepted: 0.95, blocked: 0, rejected: 0.05 };
+    if (ruleCode === 'UPC_NOT_FOUND')    return { accepted: 0.85, blocked: 0.10, rejected: 0.05 };
+    if (ruleCode === 'POC_NOT_FOUND' || ruleCode === 'INVALID_PACKAGING') {
+      return { accepted: 0.60, blocked: 0.35, rejected: 0.05 };
     }
-    if (o.statusId === 'ACCEPTED' || o.statusId === 'ALERTS') {
+    if (action === 'bypass') return { accepted: 0.90, blocked: 0, rejected: 0.10 };
+    return { accepted: 0.30, blocked: 0, rejected: 0.70 }; // rejected as-is
+  }
+
+  function applyReprocessOutcome(o, actionPayload) {
+    // actionPayload: { type: 'reprocess-no-fix' | 'bypass-only' | 'upc-selector' | 'price-choice' | 'rejected-choice',
+    //                  ruleCode, chosenPrice?, chosenUpcs?, rejectedChoice? }
+    const probs = ruleOutcomeProbabilities(actionPayload.ruleCode, actionPayload.rejectedChoice || actionPayload.type);
+    const r = Math.random();
+    let outcome;
+    if (r < probs.accepted) outcome = 'ACCEPTED';
+    else if (r < probs.accepted + probs.blocked) outcome = 'BLOCKED';
+    else outcome = 'REJECTED';
+
+    if (outcome === 'ACCEPTED') {
+      o.statusId = 'ACCEPTED';
+      o.statusLabel = 'Accepted';
+      o.statusTone = 'success';
+      o.ruleCode = null;
+      o.ruleLabel = null;
       if (!o.beesOrderNumber) {
         o.beesOrderNumber = 'BEES-' + (1000000000 + Math.floor(Math.random() * 8999999999)).toString();
       }
+      // Re-mark lines as OK now that the order was accepted.
+      o.items.forEach((it) => { it.status = 'OK'; it.ruleCode = null; });
+    } else if (outcome === 'BLOCKED') {
+      o.statusId = 'BLOCKED';
+      o.statusLabel = 'Blocked';
+      o.statusTone = 'blocked';
+      // Same rule kept (still blocking) so the analyst can iterate.
     } else {
+      o.statusId = 'REJECTED';
+      o.statusLabel = 'Rejected';
+      o.statusTone = 'error';
       o.beesOrderNumber = null;
     }
+
+    // Audit trail entry — chosen action is preserved (FR-14).
+    const auditDetail = describeAction(actionPayload);
+    o.audit.push({
+      ts: new Date().toISOString(),
+      event: `Reprocess requested — ${auditDetail}`,
+      actor: 'Ops user',
+    });
+    o.audit.push({
+      ts: new Date().toISOString(),
+      event: `Outcome: ${o.statusLabel}`,
+      actor: 'BRE',
+    });
   }
 
-  function reprocessOrder(id) {
-    const o = D.orders.find(x => x.id === id);
-    if (!o) return;
-    HT.track('reprocess_triggered', { status_before: o.statusId, vendor: o.vendorCode });
-    setTimeout(() => {
-      applyReprocessOutcome(o);
-      HT.track('reprocess_completed', { outcome: o.statusId });
-      renderTable();
-      const row = document.querySelector(`.order-row[data-id="${id}"]`);
-      if (row) row.classList.add('flash');
-      if (view.openOrderId === id) populateDrawer(o);
-    }, 900);
-  }
-
-  function reprocessFromDrawer() {
-    if (!view.openOrderId) return;
-    const o = D.orders.find(x => x.id === view.openOrderId);
-    const btn = document.getElementById('drawerReprocess');
-    btn.classList.add('hexa-btn--loading');
-    btn.disabled = true;
-    HT.track('reprocess_triggered', { status_before: o.statusId, vendor: o.vendorCode, source: 'drawer' });
-    setTimeout(() => {
-      applyReprocessOutcome(o);
-      HT.track('reprocess_completed', { outcome: o.statusId, source: 'drawer' });
-      btn.classList.remove('hexa-btn--loading');
-      btn.disabled = false;
-      populateDrawer(o);
-      renderTable();
-      const row = document.querySelector(`.order-row[data-id="${o.id}"]`);
-      if (row) row.classList.add('flash');
-    }, 900);
+  function describeAction(p) {
+    if (p.type === 'reprocess-no-fix') return `${p.ruleCode}: reprocess without fixes`;
+    if (p.type === 'bypass-only')      return `${p.ruleCode}: bypassed rule`;
+    if (p.type === 'upc-selector')     return `${p.ruleCode}: selected new UPCs for ${Object.keys(p.chosenUpcs || {}).length} line(s)`;
+    if (p.type === 'price-choice')     return `${p.ruleCode}: applied ${p.chosenPrice === 'bees' ? 'BEES contract price' : "retailer's requested price"}, price validation bypassed`;
+    if (p.type === 'rejected-choice')  return `${p.ruleCode}: ${p.rejectedChoice === 'bypass' ? 'bypassed rule and reprocessed' : 'reprocessed without fixes'}`;
+    return p.ruleCode || 'unknown';
   }
 
   // ============================================================
-  // DRAWER
+  // DRAWER — rule-aware corrective action UI
   // ============================================================
   function openDrawer(id) {
-    const o = D.orders.find(x => x.id === id);
+    const o = D.orders.find((x) => x.id === id);
     if (!o) return;
     view.openOrderId = id;
-    HT.track('order_drawer_opened', { status: o.statusId, vendor: o.vendorCode });
+    view.drawerSelectedUpcs = {};
+    view.drawerPriceChoice = 'bees';
+    view.drawerRejectedChoice = 'as-is';
+    HT.track('order_drawer_opened', { status: o.statusId, rule_category: o.ruleCode || null });
     populateDrawer(o);
     document.getElementById('orderDrawer').hidden = false;
     document.getElementById('drawerScrim').hidden = false;
@@ -906,34 +1050,53 @@
     document.getElementById('drawerScrim').hidden = true;
     HT.track('order_drawer_closed');
   }
+
   function populateDrawer(o) {
     document.getElementById('drawerTitle').textContent = 'PO ' + o.poNumber;
-    const reprocessBtn = document.getElementById('drawerReprocess');
-    const reprocessable = (o.statusId === 'REJECTED' || o.statusId === 'ALERTS' || o.statusId === 'BLOCKED');
-    reprocessBtn.style.display = reprocessable ? '' : 'none';
+    const rule = o.ruleCode ? D.RULE_BY_CODE[o.ruleCode] : null;
 
-    const alertVariant = o.statusTone === 'success' ? 'info'
-                       : o.statusTone === 'blocked' ? 'warning'
-                       : o.statusTone;
-    const alertIcon = o.statusTone === 'error'   ? 'AlertOctagonIcon'
-                    : o.statusTone === 'blocked' ? 'BlockedIcon'
-                    : o.statusTone === 'warning' ? 'AlertTriangleIcon'
-                    : 'AlertIcon';
-    const alertTitle = o.statusTone === 'error'   ? 'Why was this rejected?'
-                     : o.statusTone === 'blocked' ? 'Why is this on hold?'
-                     : 'What changed?';
-    const blockedFooter = o.statusTone === 'blocked'
-      ? `<div class="text-body-xs text-fg-neutral-secondary" style="margin-top:8px">If not resolved within the SLA, this order will auto-transition to <strong>Rejected</strong>. Fix the underlying issue and reprocess to release it.</div>`
-      : '';
-    const reasonBlock = o.reason ? `
-      <div class="hexa-alert hexa-alert--${alertVariant}">
-        <hexa-icon name="${alertIcon}"></hexa-icon>
+    // ---- Order summary section (always shown) ----
+    const reasonBlock = rule ? `
+      <div class="hexa-alert hexa-alert--${o.statusTone === 'error' ? 'error' : 'warning'}">
+        <hexa-icon name="${o.statusTone === 'error' ? 'AlertOctagonIcon' : 'BlockedIcon'}"></hexa-icon>
         <div class="hexa-alert-body">
-          <div class="hexa-alert-title">${alertTitle}</div>
-          ${o.reason}
-          ${blockedFooter}
+          <div class="hexa-alert-title">
+            ${o.statusTone === 'error' ? 'Why was this rejected?' : 'Why is this on hold?'}
+            <button class="rule-badge rule-badge--${rule.status.toLowerCase()}" data-track="drawer-rule-badge" onclick="filterByRule('${rule.code}','drawer')">${escapeHtml(rule.label)}</button>
+          </div>
+          ${escapeHtml(rule.orderCopy)}
         </div>
       </div>` : '';
+
+    // ---- Rule-specific action section ----
+    const actionSection = rule ? renderActionUi(o, rule) : `
+      <div class="section">
+        <h4>No action available</h4>
+        <p class="text-body-sm text-fg-neutral-secondary">${o.statusId === 'ACCEPTED' ? 'This order was accepted and is in the BEES OMS.' : 'This order is in queue and is being processed by BEES. Wait for the next state.'}</p>
+      </div>
+    `;
+
+    // ---- Resolution notes ----
+    const notesList = (o.notes || []).map((n) => `
+      <li class="note-item">
+        <div class="note-meta">
+          <span class="note-cat hexa-tag">${escapeHtml(n.category)}</span>
+          <span class="text-body-xs text-fg-neutral-tertiary">${fmtDate(n.ts)} · ${escapeHtml(n.author)}</span>
+        </div>
+        <div class="note-body">${escapeHtml(n.body)}</div>
+      </li>
+    `).join('') || '<li class="text-body-sm text-fg-neutral-tertiary">No resolution notes yet.</li>';
+
+    // ---- Audit trail (timeline) ----
+    const audit = (o.audit || []).map((a) => `
+      <li class="timeline-item">
+        <span class="timeline-dot"></span>
+        <div>
+          <div class="text-body-sm">${escapeHtml(a.event)}</div>
+          <div class="text-body-xs text-fg-neutral-tertiary">${fmtDate(a.ts)} · ${escapeHtml(a.actor)}</div>
+        </div>
+      </li>
+    `).join('');
 
     document.getElementById('drawerBody').innerHTML = `
       <div class="section">
@@ -944,71 +1107,279 @@
         <h4>Order</h4>
         <dl class="kv">
           <dt>Receive date</dt><dd>${fmtDate(o.receivedAt)}</dd>
-          <dt>Vendor</dt><dd>${o.vendorName}</dd>
-          <dt>POC</dt><dd>${o.pocName}<br><span class="text-body-xs text-fg-neutral-tertiary">${o.pocId} · ${o.pocCity}</span></dd>
+          <dt>Retailer chain</dt><dd>${escapeHtml(o.chainName)}</dd>
+          <dt>POC</dt><dd>${escapeHtml(o.pocName)}<br><span class="text-body-xs text-fg-neutral-tertiary">${o.pocId} · ${escapeHtml(o.pocCity)} · ${o.pocRegion}</span></dd>
+          <dt>Vendor</dt><dd>${escapeHtml(o.vendorName)}</dd>
+          <dt>Sales rep</dt><dd>${escapeHtml(o.salesRepName)}</dd>
           <dt>PO number</dt><dd style="font-family:ui-monospace,Menlo,monospace">${o.poNumber}</dd>
+          <dt>BEES order #</dt><dd>${o.beesOrderNumber ? `<span class="mono">${o.beesOrderNumber}</span>` : '<span class="text-fg-neutral-tertiary">Not yet assigned</span>'}</dd>
           <dt>Items</dt><dd>${o.itemCount}</dd>
           <dt>Total value</dt><dd>${fmtMoney(o.totalValue)}</dd>
         </dl>
       </div>
+      ${actionSection}
       <div class="section">
-        <h4>What happens when you reprocess?</h4>
-        <p class="text-body-sm text-fg-neutral-secondary">We resubmit this order to the vendor's processing pipeline. Use this after fixing the underlying configuration (POC mapping, item catalog, delivery window). Original PO number is preserved.</p>
+        <h4>Resolution notes (${(o.notes || []).length})</h4>
+        <ul class="note-list">${notesList}</ul>
+        <button class="hexa-btn hexa-btn--tertiary hexa-btn--sm" data-track="drawer-add-note" onclick="openNoteDialog('${o.id}')">
+          <hexa-icon name="EditIcon"></hexa-icon> Add note
+        </button>
+      </div>
+      <div class="section">
+        <h4>Timeline</h4>
+        <ul class="timeline">${audit}</ul>
       </div>
     `;
+
+    // ---- Drawer footer — primary action button per rule ----
+    const footer = document.getElementById('drawerFooter');
+    if (!rule) {
+      footer.innerHTML = `<button class="hexa-btn hexa-btn--tertiary" data-track="drawer-close" onclick="closeDrawer()">Close</button>`;
+    } else {
+      footer.innerHTML = `
+        <button class="hexa-btn hexa-btn--tertiary" data-track="drawer-cancel" onclick="closeDrawer()">Cancel</button>
+        <button class="hexa-btn hexa-btn--primary" id="drawerPrimary" data-track="drawer-action-${rule.code.toLowerCase()}" onclick="executeDrawerAction()">
+          <hexa-icon name="SyncIcon"></hexa-icon>
+          ${escapeHtml(rule.actionLabel)}
+        </button>
+      `;
+    }
+  }
+
+  function renderActionUi(o, rule) {
+    if (rule.action === 'reprocess-no-fix' || rule.action === 'bypass-only') {
+      return `
+        <div class="section action-section">
+          <h4>Corrective action</h4>
+          <p class="text-body-sm text-fg-neutral-secondary">${escapeHtml(rule.blurb)}</p>
+        </div>`;
+    }
+    if (rule.action === 'upc-selector') {
+      const affected = o.items.filter((it) => it.ruleCode === 'UPC_NOT_FOUND');
+      return `
+        <div class="section action-section">
+          <h4>Select correct UPCs</h4>
+          <p class="text-body-sm text-fg-neutral-secondary">${escapeHtml(rule.blurb)}</p>
+          <div class="upc-list">
+            ${affected.map((it) => {
+              const alts = alternativeUpcs(it.sku);
+              return `
+                <div class="upc-row">
+                  <div class="upc-row-line">
+                    <span class="line-num">Line ${String(it.lineNumber).padStart(2, '0')}</span>
+                    <span class="text-body-sm">${escapeHtml(it.name)}</span>
+                    <span class="text-body-xs text-fg-neutral-tertiary mono">Requested SKU: ${it.sku}</span>
+                  </div>
+                  <select class="hexa-select" data-track="drawer-upc-pick" data-line="${it.lineNumber}"
+                          onchange="setDrawerUpc(${it.lineNumber}, this.value)">
+                    <option value="">Choose correct UPC…</option>
+                    ${alts.map((a) => `<option value="${a.sku}">${a.sku} · ${escapeHtml(a.name)}</option>`).join('')}
+                  </select>
+                </div>
+              `;
+            }).join('')}
+          </div>
+        </div>`;
+    }
+    if (rule.action === 'price-choice') {
+      const affected = o.items.filter((it) => it.ruleCode === 'PRICE_MISMATCH');
+      return `
+        <div class="section action-section">
+          <h4>Choose price</h4>
+          <p class="text-body-sm text-fg-neutral-secondary">${escapeHtml(rule.blurb)}</p>
+          <div class="price-rows">
+            ${affected.map((it) => `
+              <div class="price-row">
+                <div class="text-body-sm"><strong>Line ${String(it.lineNumber).padStart(2, '0')}</strong> · ${escapeHtml(it.name)}</div>
+                <div class="text-body-xs text-fg-neutral-tertiary">
+                  Retailer requested ${fmtMoney(it.requestedUnitPrice)} · BEES contract ${fmtMoney(it.unitPrice)}
+                </div>
+              </div>
+            `).join('')}
+          </div>
+          <fieldset class="price-choice">
+            <label class="hexa-radio"><input type="radio" name="priceChoice" value="bees" checked data-track="drawer-price-bees" onchange="view.drawerPriceChoice='bees'"/> Use BEES contract price</label>
+            <label class="hexa-radio"><input type="radio" name="priceChoice" value="requested" data-track="drawer-price-requested" onchange="view.drawerPriceChoice='requested'"/> Accept retailer's requested price</label>
+          </fieldset>
+        </div>`;
+    }
+    if (rule.action === 'rejected-choice') {
+      return `
+        <div class="section action-section">
+          <h4>Choose how to reprocess</h4>
+          <p class="text-body-sm text-fg-neutral-secondary">${escapeHtml(rule.blurb)}</p>
+          <fieldset class="price-choice">
+            <label class="hexa-radio"><input type="radio" name="rejectedChoice" value="as-is" checked data-track="drawer-rejected-as-is" onchange="view.drawerRejectedChoice='as-is'"/> Reprocess without fixes (re-include as-is)</label>
+            <label class="hexa-radio"><input type="radio" name="rejectedChoice" value="bypass" data-track="drawer-rejected-bypass" onchange="view.drawerRejectedChoice='bypass'"/> Bypass the rule and reprocess</label>
+          </fieldset>
+        </div>`;
+    }
+    return '';
+  }
+
+  function setDrawerUpc(lineNumber, sku) {
+    view.drawerSelectedUpcs[lineNumber] = sku;
+  }
+
+  function executeDrawerAction() {
+    if (!view.openOrderId) return;
+    const o = D.orders.find((x) => x.id === view.openOrderId);
+    if (!o || !o.ruleCode) return;
+    const rule = D.RULE_BY_CODE[o.ruleCode];
+
+    // Validate UPC selector — every affected line must have a chosen replacement.
+    if (rule.action === 'upc-selector') {
+      const affected = o.items.filter((it) => it.ruleCode === 'UPC_NOT_FOUND');
+      const allChosen = affected.every((it) => view.drawerSelectedUpcs[it.lineNumber]);
+      if (!allChosen) {
+        flashHint('Pick a UPC for every affected line before reprocessing.');
+        return;
+      }
+    }
+
+    const payload = {
+      type: rule.action,
+      ruleCode: rule.code,
+      chosenPrice: view.drawerPriceChoice,
+      chosenUpcs: { ...view.drawerSelectedUpcs },
+      rejectedChoice: view.drawerRejectedChoice,
+    };
+
+    const btn = document.getElementById('drawerPrimary');
+    if (btn) { btn.classList.add('hexa-btn--loading'); btn.disabled = true; }
+
+    HT.track('reprocess_triggered', {
+      status_before: o.statusId,
+      rule_category: rule.code,
+      chosen_action: rule.action,
+      source: 'drawer',
+    });
+
+    setTimeout(() => {
+      applyReprocessOutcome(o, payload);
+      HT.track('reprocess_completed', {
+        status_before: 'BLOCKED_OR_REJECTED',
+        outcome: o.statusId,
+        rule_category: rule.code,
+      });
+      if (btn) { btn.classList.remove('hexa-btn--loading'); btn.disabled = false; }
+      populateDrawer(o);
+      renderTable();
+      const row = document.querySelector(`.order-row[data-id="${o.id}"]`);
+      if (row) row.classList.add('flash');
+      if (view.itemPageOrderId === o.id) renderItemPage(o.id);
+    }, 900);
+  }
+
+  // ============================================================
+  // RESOLUTION NOTES — simple inline dialog (HLR FR-9)
+  // ============================================================
+  function openNoteDialog(orderId) {
+    const o = D.orders.find((x) => x.id === orderId);
+    if (!o) return;
+    HT.track('resolution_note_dialog_opened', { status: o.statusId, rule_category: o.ruleCode || null });
+    const categories = ['catalog fix', 'pricing update', 'POC configuration', 'delivery window', 'packaging', 'retailer-side issue', 'other'];
+    const cat = window.prompt('Note category (' + categories.join(' / ') + '):', 'other');
+    if (cat == null) return;
+    const body = window.prompt('Note content:');
+    if (body == null || !body.trim()) return;
+    const note = {
+      ts: new Date().toISOString(),
+      category: categories.includes(cat) ? cat : 'other',
+      body: body.trim(),
+      author: 'Ops user',
+    };
+    o.notes = o.notes || [];
+    o.notes.push(note);
+    o.audit.push({ ts: note.ts, event: `Resolution note added (${note.category})`, actor: note.author });
+    HT.track('resolution_note_added', { category: note.category });
+    if (view.openOrderId === orderId) populateDrawer(o);
+    if (view.itemPageOrderId === orderId) renderItemPage(orderId);
   }
 
   document.addEventListener('keydown', (e) => { if (e.key === 'Escape' && view.openOrderId) closeDrawer(); });
 
   // ============================================================
-  // BULK SELECTION
+  // BULK SELECTION (HLR FR-8 — only Blocked orders sharing the same rule)
   // ============================================================
-  function toggleRowSelection(id, on) {
-    if (on) view.selected.add(id); else view.selected.delete(id);
-    HT.track('row_selection_toggled', { id, on, total_selected: view.selected.size });
-    const row = document.querySelector(`.order-row[data-id="${id}"]`);
-    if (row) row.classList.toggle('is-selected', on);
-    const orders = filteredOrders();
-    const start = (view.page - 1) * view.pageSize;
-    const pageOrders = orders.slice(start, start + view.pageSize);
-    syncBulkBar(pageOrders);
+  function selectedRuleCode() {
+    const ids = [...view.selected];
+    if (!ids.length) return null;
+    const first = D.orders.find((o) => o.id === ids[0]);
+    if (!first || first.statusId !== 'BLOCKED') return null;
+    return first.ruleCode;
   }
-
+  function isBulkSelectable(o) {
+    if (o.statusId !== 'BLOCKED') return false; // bulk only for Blocked
+    const rule = o.ruleCode ? D.RULE_BY_CODE[o.ruleCode] : null;
+    if (!rule || !rule.bulkAllowed) return false;
+    const pin = selectedRuleCode();
+    if (pin && pin !== o.ruleCode) return false; // must share rule with existing selection
+    return true;
+  }
+  function toggleRowSelection(id, on) {
+    const o = D.orders.find((x) => x.id === id);
+    if (on && o && !isBulkSelectable(o)) {
+      flashHint('Bulk reprocess works only on Blocked orders sharing the same rule.');
+      return;
+    }
+    if (on) view.selected.add(id); else view.selected.delete(id);
+    HT.track('row_selection_toggled', { on, rule_category: o ? o.ruleCode : null, total_selected: view.selected.size });
+    renderTable();
+  }
   function toggleSelectAllOnPage(on) {
     const orders = filteredOrders();
     const start = (view.page - 1) * view.pageSize;
     const pageOrders = orders.slice(start, start + view.pageSize);
-    const selectablePageIds = pageOrders.filter(isReprocessable).map(o => o.id);
-    selectablePageIds.forEach(id => { if (on) view.selected.add(id); else view.selected.delete(id); });
-    HT.track('bulk_select_all_toggled', { on, count: selectablePageIds.length });
+    // "Select all matching" pins to the same blocking rule. If nothing is selected,
+    // we pick the rule of the first eligible Blocked order on the page.
+    let pin = selectedRuleCode();
+    if (!pin) {
+      const seed = pageOrders.find((o) => o.statusId === 'BLOCKED' && D.RULE_BY_CODE[o.ruleCode]?.bulkAllowed);
+      if (seed) pin = seed.ruleCode;
+    }
+    const ids = pin
+      ? pageOrders.filter((o) => o.statusId === 'BLOCKED' && o.ruleCode === pin).map((o) => o.id)
+      : [];
+    ids.forEach((id) => { if (on) view.selected.add(id); else view.selected.delete(id); });
+    HT.track('bulk_select_all_filtered', { on, count: ids.length, rule_category: pin });
     renderTable();
   }
-
   function clearSelection() {
     const n = view.selected.size;
     view.selected.clear();
     HT.track('bulk_selection_cleared', { count: n });
     renderTable();
   }
-
   function syncBulkBar(pageOrders) {
     const bar = document.getElementById('bulkBar');
-    const selectablePage = pageOrders.filter(isReprocessable);
-    const showBar = selectablePage.length > 0 || view.selected.size > 0;
+    const eligiblePage = pageOrders.filter(isBulkSelectable);
+    const showBar = eligiblePage.length > 0 || view.selected.size > 0;
     bar.hidden = !showBar;
     if (!showBar) return;
 
-    const selectedOnPage = selectablePage.filter(o => view.selected.has(o.id)).length;
-    const allOnPageSelected = selectablePage.length > 0 && selectedOnPage === selectablePage.length;
+    const pin = selectedRuleCode();
+    const hintEl = document.getElementById('bulkRuleHint');
+    if (pin) {
+      const rule = D.RULE_BY_CODE[pin];
+      hintEl.textContent = `Bulk pinned to: ${rule.label} — only orders with this rule can be added.`;
+    } else if (eligiblePage.length) {
+      hintEl.textContent = 'Bulk reprocess: select Blocked orders sharing the same rule.';
+    } else {
+      hintEl.textContent = '';
+    }
+
+    const selectedOnPage = eligiblePage.filter((o) => view.selected.has(o.id)).length;
+    const allOnPageSelected = eligiblePage.length > 0 && selectedOnPage === eligiblePage.length;
 
     const cb = document.getElementById('bulkSelectAll');
     cb.checked = allOnPageSelected;
     cb.indeterminate = selectedOnPage > 0 && !allOnPageSelected;
-    cb.disabled = selectablePage.length === 0;
+    cb.disabled = eligiblePage.length === 0;
 
     document.getElementById('bulkSelectAllLabel').textContent =
-      selectablePage.length === 0 ? 'No selectable orders on this page'
-                                  : `Select all on this page (${selectablePage.length})`;
+      eligiblePage.length === 0 ? 'No eligible orders on this page'
+                                : `Select all on this page (${eligiblePage.length})`;
 
     const total = view.selected.size;
     document.getElementById('bulkCount').textContent = total === 1 ? '1 selected' : `${total.toLocaleString()} selected`;
@@ -1022,21 +1393,38 @@
   function reprocessSelected() {
     const ids = [...view.selected];
     if (!ids.length) return;
+    const pin = selectedRuleCode();
+    if (!pin) { flashHint('All selected orders must share the same blocking rule.'); return; }
+    const rule = D.RULE_BY_CODE[pin];
+
+    // FR-8: confirmation dialog for batches > 50 orders.
+    if (ids.length > 50) {
+      const ok = window.confirm(`You are about to reprocess ${ids.length} orders, all blocked by "${rule.label}". Continue?`);
+      if (!ok) return;
+      HT.track('bulk_confirmation_shown', { count: ids.length, rule_category: pin });
+    }
+
     const btn = document.getElementById('bulkReprocessBtn');
     btn.disabled = true;
     btn.classList.add('hexa-btn--loading');
-    HT.track('bulk_reprocess_triggered', { count: ids.length });
+    HT.track('bulk_reprocess_triggered', { count: ids.length, rule_category: pin });
+
+    // Use a single per-rule action payload — bulk applies the canonical action.
+    const payloadType = rule.action === 'upc-selector' ? 'reprocess-no-fix' : rule.action;
     setTimeout(() => {
-      const outcomes = { ACCEPTED: 0, ALERTS: 0, BLOCKED: 0, REJECTED: 0 };
-      ids.forEach(id => {
-        const o = D.orders.find(x => x.id === id);
-        if (o) { applyReprocessOutcome(o); outcomes[o.statusId] = (outcomes[o.statusId] || 0) + 1; }
+      const outcomes = { ACCEPTED: 0, BLOCKED: 0, REJECTED: 0, IN_QUEUE: 0 };
+      ids.forEach((id) => {
+        const o = D.orders.find((x) => x.id === id);
+        if (o) {
+          applyReprocessOutcome(o, { type: payloadType, ruleCode: pin, chosenPrice: 'bees', rejectedChoice: 'as-is' });
+          outcomes[o.statusId] = (outcomes[o.statusId] || 0) + 1;
+        }
       });
-      HT.track('bulk_reprocess_completed', { count: ids.length, outcomes });
+      HT.track('bulk_reprocess_completed', { count: ids.length, rule_category: pin, outcomes });
       view.selected.clear();
       btn.classList.remove('hexa-btn--loading');
       renderTable();
-      ids.forEach(id => {
+      ids.forEach((id) => {
         const row = document.querySelector(`.order-row[data-id="${id}"]`);
         if (row) row.classList.add('flash');
       });
@@ -1051,7 +1439,7 @@
   }
 
   function renderItemPage(orderId) {
-    const o = D.orders.find(x => x.id === orderId);
+    const o = D.orders.find((x) => x.id === orderId);
     if (!o) {
       document.getElementById('itemPageSummary').innerHTML = `<div class="text-body-md">Order not found. <a href="#orders" class="hexa-link">Back to all orders</a></div>`;
       document.getElementById('itemSummaryCards').innerHTML = '';
@@ -1060,36 +1448,48 @@
     }
     view.itemPageOrderId = orderId;
 
-    document.getElementById('itemPageReprocessBtn').style.display = isReprocessable(o) ? '' : 'none';
+    // Band action — only blocked/rejected orders expose "Take action".
+    const actionBtn = document.getElementById('itemPageActionBtn');
+    const actionLabel = document.getElementById('itemPageActionLabel');
+    if (isReprocessable(o)) {
+      actionBtn.style.display = '';
+      const rule = D.RULE_BY_CODE[o.ruleCode];
+      actionLabel.textContent = rule ? rule.actionLabel : 'Take action';
+    } else {
+      actionBtn.style.display = 'none';
+    }
 
+    const rule = o.ruleCode ? D.RULE_BY_CODE[o.ruleCode] : null;
     document.getElementById('itemPageSummary').innerHTML = `
       <div class="order-details-status">
         ${statusPill(o)}
-        ${o.reason ? `<span class="order-details-reason">${o.reason}</span>` : ''}
+        ${rule ? `<span class="order-details-reason">${escapeHtml(rule.orderCopy)}</span>` : ''}
+        ${rule ? ruleBadge(rule.code, 'item-page') : ''}
       </div>
       <dl class="order-details-grid">
-        <div><dt>BEES order number</dt><dd>${o.beesOrderNumber ? `<span class="mono">${o.beesOrderNumber}</span>` : '<span class="text-fg-neutral-tertiary">— not yet assigned</span>'}</dd></div>
+        <div><dt>BEES order number</dt><dd>${o.beesOrderNumber ? `<span class="mono">${o.beesOrderNumber}</span>` : '<span class="text-fg-neutral-tertiary">Not yet assigned</span>'}</dd></div>
         <div><dt>PO number</dt><dd><span class="mono">${o.poNumber}</span></dd></div>
         <div><dt>Receive date</dt><dd>${fmtDate(o.receivedAt)}</dd></div>
-        <div><dt>POC</dt><dd>${o.pocName} <span class="text-fg-neutral-tertiary">${o.pocId} · ${o.pocCity}</span></dd></div>
-        <div><dt>Vendor</dt><dd>${o.vendorName}</dd></div>
+        <div><dt>POC</dt><dd>${escapeHtml(o.pocName)} <span class="text-fg-neutral-tertiary">${o.pocId} · ${escapeHtml(o.pocCity)}</span></dd></div>
+        <div><dt>Retailer chain</dt><dd>${escapeHtml(o.chainName)}</dd></div>
+        <div><dt>Vendor</dt><dd>${escapeHtml(o.vendorName)}</dd></div>
+        <div><dt>Sales rep</dt><dd>${escapeHtml(o.salesRepName)}</dd></div>
         <div><dt>Items</dt><dd>${o.itemCount.toLocaleString()}</dd></div>
-        <div><dt>Requested total</dt><dd>${fmtMoney(o.requestedTotalValue ?? o.totalValue)}</dd></div>
-        <div><dt>Delivered total</dt><dd><strong>${fmtMoney(o.totalValue)}</strong></dd></div>
+        <div><dt>Total value</dt><dd><strong>${fmtMoney(o.totalValue)}</strong></dd></div>
       </dl>
     `;
 
-    const counts = { OK: 0, ALERT: 0, BLOCKED: 0, REJECTED: 0, PENDING: 0 };
-    o.items.forEach(it => { counts[it.status] = (counts[it.status] || 0) + 1; });
+    // Per-line counts — strict 4-state line model (no ALERT).
+    const counts = { OK: 0, BLOCKED: 0, REJECTED: 0, PENDING: 0 };
+    o.items.forEach((it) => { counts[it.status] = (counts[it.status] || 0) + 1; });
     const chipDef = [
       { key: 'OK',       label: 'OK',       tone: 'success' },
-      { key: 'ALERT',    label: 'Alerts',   tone: 'warning' },
       { key: 'BLOCKED',  label: 'Blocked',  tone: 'blocked' },
-      { key: 'REJECTED', label: 'Rejected', tone: 'error' },
-      { key: 'PENDING',  label: 'Pending',  tone: 'info' },
-    ].filter(c => counts[c.key] > 0);
+      { key: 'REJECTED', label: 'Rejected', tone: 'error'   },
+      { key: 'PENDING',  label: 'In queue', tone: 'info'    },
+    ].filter((c) => counts[c.key] > 0);
 
-    document.getElementById('itemSummaryCards').innerHTML = chipDef.map(c => `
+    document.getElementById('itemSummaryCards').innerHTML = chipDef.map((c) => `
       <div class="item-stat">
         <span class="item-stat-dot dot-${c.tone}"></span>
         <span class="item-stat-num">${counts[c.key]}</span>
@@ -1097,24 +1497,21 @@
       </div>
     `).join('');
 
-    const severity = { REJECTED: 0, BLOCKED: 1, ALERT: 2, PENDING: 3, OK: 4 };
+    const severity = { REJECTED: 0, BLOCKED: 1, PENDING: 2, OK: 3 };
     const lines = [...o.items].sort((a, b) => severity[a.status] - severity[b.status]);
 
-    const itemRows = lines.map(it => {
+    const itemRows = lines.map((it) => {
       const lineTone = it.status === 'REJECTED' ? 'error'
                      : it.status === 'BLOCKED'  ? 'blocked'
-                     : it.status === 'ALERT'    ? 'warning'
                      : it.status === 'PENDING'  ? 'info'
                      : 'success';
       const lineLabel = it.status === 'REJECTED' ? 'Rejected'
                       : it.status === 'BLOCKED'  ? 'Blocked'
-                      : it.status === 'ALERT'    ? 'Accepted with alerts'
-                      : it.status === 'PENDING'  ? 'Waiting process'
-                      : 'Accepted';
+                      : it.status === 'PENDING'  ? 'In queue'
+                      : 'OK';
 
-      const qtyDiverges   = it.qty !== it.requestedQty;
+      const lineRule = it.ruleCode ? D.RULE_BY_CODE[it.ruleCode] : null;
       const priceDiverges = it.unitPrice !== it.requestedUnitPrice;
-      const totalDiverges = it.lineValue !== it.requestedLineValue;
 
       function metric(label, requested, delivered, diverges, isMoney) {
         const reqStr = isMoney ? fmtMoney(requested) : `${requested.toLocaleString()} ${it.uom}`;
@@ -1137,15 +1534,15 @@
           </div>`;
       }
 
-      const issue = it.issueLabel
+      const issue = lineRule
         ? `<div class="item-row-issue">
-             <hexa-icon name="${it.status === 'REJECTED' ? 'AlertOctagonIcon'
-                              : it.status === 'BLOCKED'  ? 'BlockedIcon'
-                              : 'AlertTriangleIcon'}"></hexa-icon>
-             <div class="item-row-issue-text">${it.issueLabel}</div>
+             <hexa-icon name="${it.status === 'REJECTED' ? 'AlertOctagonIcon' : 'BlockedIcon'}"></hexa-icon>
+             <div class="item-row-issue-text">
+               <strong>${escapeHtml(lineRule.label)}</strong> — ${escapeHtml(lineRule.orderCopy)}
+             </div>
            </div>` : '';
 
-      const initials = it.name.split(/\s|—|-/).filter(Boolean).slice(0, 2).map(w => w[0]).join('').toUpperCase();
+      const initials = it.name.split(/\s|—|-/).filter(Boolean).slice(0, 2).map((w) => w[0]).join('').toUpperCase();
 
       return `
         <div class="item-row item-row--${lineTone}" data-line="${it.lineNumber}">
@@ -1156,13 +1553,13 @@
                 <span class="item-line-num">Line ${String(it.lineNumber).padStart(2, '0')}</span>
                 <span class="status-pill is-${lineTone}">${lineLabel}</span>
               </div>
-              <div class="item-name-main">${it.name}</div>
-              <div class="item-name-meta">SKU ${it.sku} · ${it.family} · ${it.uom}</div>
+              <div class="item-name-main">${escapeHtml(it.name)}</div>
+              <div class="item-name-meta">SKU ${it.sku} · ${escapeHtml(it.family)} · ${it.uom}</div>
             </div>
             <div class="item-metrics">
-              ${metric('Requested Qty',         it.requestedQty,       it.qty,       qtyDiverges,   false)}
+              ${metric('Requested Qty',         it.requestedQty,       it.qty,       false, false)}
               ${metric('Requested Unit Price',  it.requestedUnitPrice, it.unitPrice, priceDiverges, true)}
-              ${metric('Requested line total',  it.requestedLineValue, it.lineValue, totalDiverges, true)}
+              ${metric('Requested line total',  it.requestedLineValue, it.lineValue, priceDiverges, true)}
             </div>
           </div>
           ${issue}
@@ -1181,30 +1578,10 @@
     HT.track('item_page_rendered', {
       order_id: o.id,
       status: o.statusId,
+      rule_category: o.ruleCode || null,
       lines: o.items.length,
       counts,
     });
-  }
-
-  function reprocessFromItemPage() {
-    if (!view.itemPageOrderId) return;
-    const o = D.orders.find(x => x.id === view.itemPageOrderId);
-    if (!o) return;
-    const btn = document.getElementById('itemPageReprocessBtn');
-    btn.disabled = true;
-    btn.classList.add('hexa-btn--loading');
-    HT.track('reprocess_triggered', { status_before: o.statusId, vendor: o.vendorCode, source: 'item-page' });
-    setTimeout(() => {
-      applyReprocessOutcome(o);
-      if (o.statusId === 'ACCEPTED') {
-        o.items.forEach(it => { it.status = 'OK'; it.issueCode = null; it.issueLabel = null; });
-      }
-      HT.track('reprocess_completed', { outcome: o.statusId, source: 'item-page' });
-      btn.classList.remove('hexa-btn--loading');
-      btn.disabled = false;
-      renderItemPage(view.itemPageOrderId);
-      if (view.openOrderId === o.id) populateDrawer(o);
-    }, 900);
   }
 
   // ============================================================
