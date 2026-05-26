@@ -1,0 +1,251 @@
+/* data.js — mock catalogue of offers for the Offers & Promotions Hub prototype.
+ *
+ * Status keys map to the PRD:
+ *   - new           → is-info     (added within the last 7 days)
+ *   - expiring      → is-warning  (expires within 7 days)
+ *   - active        → is-success  (retailer has already activated)
+ *   - used          → is-neutral  (closed / expired — for reference)
+ *
+ * `expiresAt` is an ISO date string. The prototype computes "days left" against
+ * a fixed REFERENCE_DATE so the demo always shows consistent expiry signals
+ * regardless of the day a tester opens the page.
+ */
+(function (global) {
+  'use strict';
+
+  // Fixed "today" so the expiry indicators look the same every day for testers.
+  // Picked so a couple of offers fall into the < 7 day window.
+  const REFERENCE_DATE = new Date('2026-05-26T12:00:00Z');
+
+  const OFFERS = [
+    {
+      id: 'OFF-2041',
+      name: 'Budweiser CASE — 15% off',
+      brand: 'Budweiser',
+      category: 'Beer',
+      discount: '15% off',
+      discountDetail: 'Applied to unit price at checkout',
+      minOrder: 'Min. 5 CASE',
+      minOrderQty: 5,
+      expiresAt: '2026-06-12',
+      addedAt: '2026-05-22',
+      status: 'new',
+      code: 'BUD-15-MAY26',
+      eligibleSkus: [
+        { sku: 'BUD-330-24', name: 'Budweiser 330ml — 24 pack', uom: 'CASE' },
+        { sku: 'BUD-600-12', name: 'Budweiser 600ml — 12 pack', uom: 'CASE' },
+      ],
+      terms: 'Discount applies automatically when at least 5 CASE of any eligible Budweiser SKU are added to the same qualifying order. Cannot be combined with the Budweiser Zero launch promo.',
+    },
+    {
+      id: 'OFF-2078',
+      name: 'Corona Extra — Buy 10, get 2 free',
+      brand: 'Corona',
+      category: 'Beer',
+      discount: 'Buy 10, get 2 free',
+      discountDetail: '2 free CASE added at fulfilment',
+      minOrder: 'Min. 10 CASE',
+      minOrderQty: 10,
+      expiresAt: '2026-05-30',
+      addedAt: '2026-05-04',
+      status: 'expiring',
+      code: 'COR-B10G2',
+      eligibleSkus: [
+        { sku: 'COR-355-24', name: 'Corona Extra 355ml — 24 pack', uom: 'CASE' },
+      ],
+      terms: 'For every 10 CASE of Corona Extra 355ml ordered, 2 additional CASE will be shipped free of charge. The promotion applies per qualifying order and is not cumulative across orders.',
+    },
+    {
+      id: 'OFF-2102',
+      name: 'Stella Artois — R$120 off your order',
+      brand: 'Stella Artois',
+      category: 'Beer',
+      discount: 'R$120 off',
+      discountDetail: 'Flat discount on order total',
+      minOrder: 'Min. 8 CASE',
+      minOrderQty: 8,
+      expiresAt: '2026-08-15',
+      addedAt: '2026-04-30',
+      status: 'active',
+      activatedAt: '2026-05-18',
+      code: 'STELLA-120-OFF',
+      eligibleSkus: [
+        { sku: 'STELLA-275-24', name: 'Stella Artois 275ml — 24 pack', uom: 'CASE' },
+        { sku: 'STELLA-330-12', name: 'Stella Artois 330ml — 12 pack', uom: 'CASE' },
+      ],
+      terms: 'R$120 is deducted from the order subtotal when at least 8 CASE of qualifying Stella Artois SKUs are present. Limit one redemption per week.',
+    },
+    {
+      id: 'OFF-2115',
+      name: 'Spaten 0,0 — 20% off Non-Alcoholic',
+      brand: 'Spaten',
+      category: 'Non-Alcoholic',
+      discount: '20% off',
+      discountDetail: 'Applied to unit price at checkout',
+      minOrder: 'Min. 3 CASE',
+      minOrderQty: 3,
+      expiresAt: '2026-07-12',
+      addedAt: '2026-05-09',
+      status: 'active',
+      activatedAt: '2026-05-12',
+      code: 'SPATEN-00-20',
+      eligibleSkus: [
+        { sku: 'SPATEN-00-330-24', name: 'Spaten 0.0% 330ml — 24 pack', uom: 'CASE' },
+      ],
+      terms: 'Discount applies to Spaten 0,0% non-alcoholic SKUs only. Stackable with the Non-Alcoholic Variety Bundle.',
+    },
+    {
+      id: 'OFF-2123',
+      name: 'Becks Premium — Special pricing',
+      brand: 'Becks',
+      category: 'Beer',
+      discount: '10% off',
+      discountDetail: 'Applied to unit price at checkout',
+      minOrder: 'Min. 5 CASE',
+      minOrderQty: 5,
+      expiresAt: '2026-06-15',
+      addedAt: '2026-05-23',
+      status: 'new',
+      code: 'BECKS-PREM-10',
+      eligibleSkus: [
+        { sku: 'BECKS-330-24', name: 'Becks Premium 330ml — 24 pack', uom: 'CASE' },
+      ],
+      terms: 'Discount applies to Becks Premium 330ml only. Cannot be combined with the Becks Lager bulk discount.',
+    },
+    {
+      id: 'OFF-2147',
+      name: 'Mixed Beer Bundle — Save 25%',
+      brand: 'Other',
+      category: 'Beer',
+      discount: '25% off',
+      discountDetail: 'Bundle discount on qualifying mix',
+      minOrder: 'Min. 12 CASE',
+      minOrderQty: 12,
+      expiresAt: '2026-05-29',
+      addedAt: '2026-05-02',
+      status: 'expiring',
+      code: 'MIX-BEER-25',
+      eligibleSkus: [
+        { sku: 'BUD-330-24', name: 'Budweiser 330ml — 24 pack', uom: 'CASE' },
+        { sku: 'COR-355-24', name: 'Corona Extra 355ml — 24 pack', uom: 'CASE' },
+        { sku: 'STELLA-275-24', name: 'Stella Artois 275ml — 24 pack', uom: 'CASE' },
+      ],
+      terms: 'Order at least 4 CASE of three different brands above (12 CASE total) to unlock 25% off the bundle subtotal. Applies once per qualifying order.',
+    },
+    {
+      id: 'OFF-2151',
+      name: 'Corona Sunset Edition — Free shipping',
+      brand: 'Corona',
+      category: 'Beer',
+      discount: 'Free shipping',
+      discountDetail: 'Standard delivery waived',
+      minOrder: 'Min. 6 CASE',
+      minOrderQty: 6,
+      expiresAt: '2026-04-20',
+      addedAt: '2026-03-15',
+      status: 'used',
+      code: 'COR-SUNSET-FS',
+      eligibleSkus: [
+        { sku: 'COR-SUNSET-355-24', name: 'Corona Sunset Edition 355ml — 24 pack', uom: 'CASE' },
+      ],
+      terms: 'Standard shipping fee waived on orders containing at least 6 CASE of the Sunset Edition. Closed on 2026-04-20.',
+    },
+    {
+      id: 'OFF-2168',
+      name: 'Budweiser Zero — Launch promo',
+      brand: 'Budweiser',
+      category: 'Non-Alcoholic',
+      discount: '30% off',
+      discountDetail: 'Launch incentive — first 4 weeks',
+      minOrder: 'Min. 4 CASE',
+      minOrderQty: 4,
+      expiresAt: '2026-07-30',
+      addedAt: '2026-05-25',
+      status: 'new',
+      code: 'BUD-ZERO-LAUNCH',
+      eligibleSkus: [
+        { sku: 'BUD-ZERO-330-24', name: 'Budweiser Zero 330ml — 24 pack', uom: 'CASE' },
+      ],
+      terms: 'Launch incentive — 30% off the first order containing Budweiser Zero. Limited to one redemption per retailer.',
+    },
+    {
+      id: 'OFF-2179',
+      name: 'Tasting Pack — Spirits sample 10% off',
+      brand: 'Other',
+      category: 'Spirits',
+      discount: '10% off',
+      discountDetail: 'Applied to unit price at checkout',
+      minOrder: 'Min. 2 CASE',
+      minOrderQty: 2,
+      expiresAt: '2026-09-30',
+      addedAt: '2026-05-20',
+      status: 'new',
+      code: 'SPIRITS-TST-10',
+      eligibleSkus: [
+        { sku: 'SPIRITS-TST-12', name: 'Spirits Tasting Pack — 12 mini bottles', uom: 'CASE' },
+      ],
+      terms: 'Discount applies to the curated Spirits Tasting Pack only. Limited availability — first come, first served.',
+    },
+    {
+      id: 'OFF-2188',
+      name: 'Corona Mini Pack — Buy 5 get 1',
+      brand: 'Corona',
+      category: 'Beer',
+      discount: 'Buy 5, get 1 free',
+      discountDetail: '1 free CASE added at fulfilment',
+      minOrder: 'Min. 5 CASE',
+      minOrderQty: 5,
+      expiresAt: '2026-06-22',
+      addedAt: '2026-04-25',
+      status: 'active',
+      activatedAt: '2026-05-09',
+      code: 'COR-MINI-B5G1',
+      eligibleSkus: [
+        { sku: 'COR-MINI-210-12', name: 'Corona Extra Mini 210ml — 12 pack', uom: 'CASE' },
+      ],
+      terms: 'For every 5 CASE of Corona Mini Pack ordered, 1 additional CASE is included at no extra cost.',
+    },
+    {
+      id: 'OFF-2192',
+      name: 'Stella Artois Anniversary — 18% off',
+      brand: 'Stella Artois',
+      category: 'Beer',
+      discount: '18% off',
+      discountDetail: 'Applied to unit price at checkout',
+      minOrder: 'Min. 10 CASE',
+      minOrderQty: 10,
+      expiresAt: '2026-05-15',
+      addedAt: '2026-04-10',
+      status: 'used',
+      code: 'STELLA-ANN-18',
+      eligibleSkus: [
+        { sku: 'STELLA-275-24', name: 'Stella Artois 275ml — 24 pack', uom: 'CASE' },
+      ],
+      terms: 'Anniversary celebration discount — closed on 2026-05-15.',
+    },
+    {
+      id: 'OFF-2204',
+      name: 'Becks Lager — Bulk discount',
+      brand: 'Becks',
+      category: 'Beer',
+      discount: '12% off',
+      discountDetail: 'Applied to unit price at checkout',
+      minOrder: 'Min. 20 CASE',
+      minOrderQty: 20,
+      expiresAt: '2026-07-05',
+      addedAt: '2026-05-21',
+      status: 'new',
+      code: 'BECKS-LAGER-12',
+      eligibleSkus: [
+        { sku: 'BECKS-LAGER-330-24', name: 'Becks Lager 330ml — 24 pack', uom: 'CASE' },
+        { sku: 'BECKS-LAGER-600-12', name: 'Becks Lager 600ml — 12 pack', uom: 'CASE' },
+      ],
+      terms: 'Bulk pricing kicks in at 20 CASE of Becks Lager SKUs combined. Cannot be combined with the Becks Premium special.',
+    },
+  ];
+
+  global.OFFERS_DATA = {
+    referenceDate: REFERENCE_DATE,
+    offers: OFFERS,
+  };
+})(window);

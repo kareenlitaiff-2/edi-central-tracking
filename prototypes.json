@@ -61,5 +61,13 @@
     "hypothesis": "Users who have a centralized notification center will act on alerts faster, reducing missed actions.",
     "createdAt": "2026-05-14",
     "metric": "≥ 60% of testers click the notification bell and mark at least one item as read within 60 seconds"
+  },
+  {
+    "id": "offers-promotions-hub",
+    "name": "Offers & Promotions Hub",
+    "hypothesis": "A single Offers Hub with status-aware filtering and one-click activation increases offer click-through and shortens time to first activation.",
+    "createdAt": "2026-05-26",
+    "prd": "PRD-offers-promotions-hub.md (BEES Link — Commercial Management, draft 2026-05-14)",
+    "metric": "≥ 50% of Hub sessions click an offer; median time to first activation < 90 s"
   }
 ]

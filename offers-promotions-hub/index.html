@@ -1,0 +1,743 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>Offers & Promotions Hub — BEES Link</title>
+  <link rel="stylesheet" href="../_shared/hexa-tokens.css" />
+  <link rel="stylesheet" href="../_shared/hexa-components.css" />
+  <link rel="stylesheet" href="./styles.css" />
+  <script src="../_shared/hexa.js" defer></script>
+  <script
+    src="../_shared/hypothesis-tracker.js"
+    data-prototype-id="offers-promotions-hub"
+    data-hypothesis="A single Offers Hub with status-aware filtering and one-click activation increases offer click-through and shortens time to first activation."
+    data-variant="A"></script>
+  <script src="./data.js" defer></script>
+</head>
+<body>
+
+  <!-- ============================================================ -->
+  <!-- BEES topbar (primary row + secondary nav)                    -->
+  <!-- ============================================================ -->
+  <header class="bees-topbar">
+    <div class="bees-topbar-row bees-topbar-row--primary">
+      <a class="bees-logo" href="#hub" aria-label="BEES Link home" data-track="nav-logo">
+        <img src="../_shared/img/bees-logo.png" alt="BEES" />
+      </a>
+      <div class="bees-search">
+        <input type="search" placeholder="Search products, orders, offers…" aria-label="Search" />
+        <button type="button" class="bees-search-btn" aria-label="Search" data-track="cta-search">
+          <hexa-icon name="SearchIcon"></hexa-icon>
+        </button>
+      </div>
+      <button type="button" class="bees-account-pill" data-track="cta-account-pill">
+        <hexa-icon name="StoreIcon"></hexa-icon>
+        <span class="bees-account-pill-label">
+          <small>Account</small>
+          <span>Mercearia Boa Vista</span>
+        </span>
+        <hexa-icon name="ChevronDownIcon"></hexa-icon>
+      </button>
+      <div class="bees-iconbar">
+        <button class="bees-icon-btn" aria-label="My profile" data-track="nav-profile">
+          <hexa-icon name="UserIcon"></hexa-icon>
+        </button>
+        <button class="bees-icon-btn" aria-label="Notifications" data-track="nav-notifications">
+          <hexa-icon name="BellIcon"></hexa-icon>
+          <span class="bees-icon-badge">3</span>
+        </button>
+        <button class="bees-icon-btn" aria-label="Cart" data-track="nav-cart">
+          <hexa-icon name="CartIcon"></hexa-icon>
+          <span class="bees-icon-badge">2</span>
+        </button>
+      </div>
+    </div>
+    <div class="bees-topbar-row bees-topbar-row--secondary">
+      <nav class="bees-nav">
+        <a href="#hub" data-track="nav-product-categories">Product categories</a>
+        <a href="#order" data-track="nav-order">Order</a>
+        <a href="#hub" class="is-active" data-track="nav-commercial">Commercial management</a>
+        <a href="#hub" data-track="nav-payments">Payments</a>
+      </nav>
+      <div class="bees-nav-right">
+        <a href="#hub" data-track="nav-help">Help &amp; Support</a>
+      </div>
+    </div>
+  </header>
+
+  <!-- Commercial management sub-tabs (the PRD calls out "Offers" as the active page) -->
+  <div class="bees-subtabs" id="subtabs">
+    <div class="bees-subtabs-inner">
+      <button class="bees-subtab" data-track="subtab-overview" onclick="location.hash='#hub'">Overview</button>
+      <button class="bees-subtab is-active" data-track="subtab-offers" onclick="location.hash='#hub'">Offers</button>
+      <button class="bees-subtab" data-track="subtab-catalog">Catalog</button>
+      <button class="bees-subtab" data-track="subtab-reports">Reports</button>
+    </div>
+  </div>
+
+  <!-- ============================================================ -->
+  <!-- SCREEN 1 — Offers Hub                                        -->
+  <!-- ============================================================ -->
+  <main class="app-shell" id="hub" data-screen>
+    <div class="page-header">
+      <div>
+        <h1 class="page-title">Offers &amp; promotions</h1>
+        <p class="page-subtitle">All promotions available to <strong>Mercearia Boa Vista</strong>. Activate the ones you want — the discount applies automatically on your next qualifying order.</p>
+      </div>
+      <div class="page-header-actions">
+        <a class="hexa-text-btn" href="../_shared/dashboard.html?id=offers-promotions-hub" target="_blank" rel="noopener" data-track="open-dashboard">
+          <hexa-icon name="BarChartIcon"></hexa-icon>
+          View prototype analytics
+        </a>
+      </div>
+    </div>
+
+    <!-- Summary cards (quick filters) -->
+    <div class="summary-cards" id="summaryCards"></div>
+
+    <!-- Filter bar -->
+    <div class="filter-bar">
+      <button type="button" class="filter-toggle" id="filterToggle" data-track="cta-filter-toggle" aria-expanded="false">
+        <hexa-icon name="FilterIcon"></hexa-icon>
+        Filter
+      </button>
+      <span class="filter-summary" id="filterSummary">Showing all offers</span>
+    </div>
+
+    <!-- Filter panel (collapsed by default) -->
+    <div class="filter-panel" id="filterPanel" hidden>
+      <div class="filter-grid">
+        <label class="hexa-field">
+          <span class="hexa-label">Status</span>
+          <select class="hexa-select" id="f-status" multiple size="4">
+            <option value="new">New</option>
+            <option value="expiring">Expiring soon</option>
+            <option value="active">Active</option>
+            <option value="used">Used / Expired</option>
+          </select>
+        </label>
+        <label class="hexa-field">
+          <span class="hexa-label">Product category</span>
+          <select class="hexa-select" id="f-category" multiple size="4">
+            <option value="Beer">Beer</option>
+            <option value="Non-Alcoholic">Non-Alcoholic</option>
+            <option value="Spirits">Spirits</option>
+            <option value="Snacks">Snacks</option>
+          </select>
+        </label>
+        <label class="hexa-field">
+          <span class="hexa-label">Brand</span>
+          <select class="hexa-select" id="f-brand" multiple size="6">
+            <option value="Budweiser">Budweiser</option>
+            <option value="Corona">Corona</option>
+            <option value="Stella Artois">Stella Artois</option>
+            <option value="Spaten">Spaten</option>
+            <option value="Becks">Becks</option>
+            <option value="Other">Other</option>
+          </select>
+        </label>
+        <div style="grid-column: span 2;">
+          <span class="hexa-label" style="font-size:12px;text-transform:uppercase;letter-spacing:.04em;display:block;margin-bottom:6px;">Expiry period</span>
+          <div class="filter-period">
+            <label class="hexa-field" aria-label="Start date">
+              <span class="hexa-input-wrap"><input class="hexa-input" type="date" id="f-from" /></span>
+            </label>
+            <label class="hexa-field" aria-label="End date">
+              <span class="hexa-input-wrap"><input class="hexa-input" type="date" id="f-to" /></span>
+            </label>
+          </div>
+        </div>
+      </div>
+      <div class="filter-actions">
+        <button type="button" class="hexa-btn hexa-btn--tertiary" id="btnClear" data-track="cta-filter-clear">Clear all</button>
+        <button type="button" class="hexa-btn hexa-btn--primary" id="btnApply" data-track="cta-filter-apply">Apply filters</button>
+      </div>
+    </div>
+
+    <!-- Offers table -->
+    <div class="offer-table">
+      <div class="offer-list" id="offerList">
+        <div class="offer-row offer-row--head">
+          <div>Offer</div>
+          <div>Brand</div>
+          <div>Category</div>
+          <div>Discount</div>
+          <div>Min. order</div>
+          <div>Expires</div>
+          <div>Status</div>
+          <div style="text-align:right;">Actions</div>
+        </div>
+        <div id="rowsHost"></div>
+      </div>
+    </div>
+
+    <!-- Pagination -->
+    <div class="pagination">
+      <div class="pagination-left">
+        <span id="paginationTotal">0 offers</span>
+        <span style="color:var(--hexa-fg-neutral-tertiary)">·</span>
+        <span>Rows per page</span>
+        <select class="hexa-select" id="pageSize" aria-label="Rows per page">
+          <option>10</option>
+          <option>25</option>
+          <option>50</option>
+        </select>
+      </div>
+      <div class="pagination-right" id="pageNumbers"></div>
+    </div>
+  </main>
+
+  <!-- ============================================================ -->
+  <!-- SCREEN 2 — Order placeholder                                 -->
+  <!-- ============================================================ -->
+  <main class="app-shell" id="order" data-screen hidden>
+    <div class="hexa-empty">
+      <hexa-illustration name="EmptyTruck" size="180"></hexa-illustration>
+      <h3>Order workflow lives elsewhere</h3>
+      <p class="text-body-md text-fg-neutral-secondary" style="max-width:520px;">
+        This prototype focuses on the <strong>Offers &amp; promotions Hub</strong>. The Order page is included as a navigation stub so you can verify how the topbar behaves when leaving the Hub.
+      </p>
+      <button class="hexa-btn hexa-btn--secondary mt-md" data-track="cta-back-to-hub" onclick="location.hash='#hub'">
+        <hexa-icon name="ArrowLeftIcon"></hexa-icon>
+        Back to Offers
+      </button>
+    </div>
+  </main>
+
+  <!-- ============================================================ -->
+  <!-- Detail drawer (non-modal)                                    -->
+  <!-- ============================================================ -->
+  <div class="drawer-scrim" id="drawerScrim" hidden></div>
+  <aside class="offer-drawer" id="drawer" hidden aria-labelledby="drawerName">
+    <div class="drawer-head">
+      <div class="drawer-head-main">
+        <h2 class="drawer-head-name" id="drawerName">—</h2>
+        <div class="drawer-head-brand">
+          <span class="brand-logo" id="drawerLogo">—</span>
+          <span id="drawerBrand">—</span>
+          <span style="color:var(--hexa-fg-neutral-tertiary)">·</span>
+          <span id="drawerCategory">—</span>
+        </div>
+        <span class="status-pill" id="drawerPill">—</span>
+      </div>
+      <button class="drawer-close" id="drawerClose" data-track="cta-close-drawer" aria-label="Close">
+        <hexa-icon name="CloseIcon"></hexa-icon>
+      </button>
+    </div>
+
+    <div class="drawer-actions">
+      <button class="hexa-btn hexa-btn--secondary" id="drawerSecondary" data-track="cta-drawer-share">
+        <hexa-icon name="DownloadIcon"></hexa-icon>
+        Save PDF
+      </button>
+      <button class="hexa-btn hexa-btn--primary" id="drawerActivate" data-track="cta-activate-drawer">
+        <hexa-icon name="CheckIcon"></hexa-icon>
+        Activate offer
+      </button>
+    </div>
+
+    <div class="drawer-body">
+      <section class="drawer-section">
+        <h4>Key facts</h4>
+        <dl class="kv">
+          <dt>Discount</dt>          <dd id="kvDiscount">—</dd>
+          <dt>Minimum order</dt>     <dd id="kvMin">—</dd>
+          <dt>Eligible products</dt> <dd id="kvElig">—</dd>
+          <dt>Period</dt>            <dd id="kvPeriod">—</dd>
+          <dt>Offer code</dt>        <dd><code id="kvCode">—</code></dd>
+        </dl>
+      </section>
+
+      <section class="drawer-section">
+        <h4>Terms &amp; conditions</h4>
+        <p class="drawer-terms" id="drawerTerms">—</p>
+      </section>
+
+      <section class="drawer-section">
+        <h4>Eligible SKUs</h4>
+        <div class="sku-list" id="drawerSkus"></div>
+      </section>
+
+      <section class="drawer-section">
+        <div class="drawer-alert" id="drawerAlert">
+          <hexa-icon name="InfoIcon"></hexa-icon>
+          <div id="drawerAlertText">—</div>
+        </div>
+      </section>
+    </div>
+  </aside>
+
+  <!-- ============================================================ -->
+  <!-- Footer                                                       -->
+  <!-- ============================================================ -->
+  <footer class="bees-footer">
+    <div class="bees-footer-inner">
+      <div class="bees-footer-col">
+        <h4>About BEES</h4>
+        <a href="#">Learn about us</a> / <a href="#">Privacy policy</a> / <a href="#">Terms and conditions</a>
+      </div>
+      <div class="bees-footer-col">
+        <h4>Need help?</h4>
+        <a href="#">Frequent questions</a> / <a href="#">Contact us</a>
+        <p>Email: bees@za.ab-inbev.com / Tel: +27 860 000722</p>
+      </div>
+      <div class="bees-footer-col">
+        <h4>Schedule</h4>
+        <p>Monday to Friday: 7am – 5pm / Weekends: 8am – 2pm</p>
+      </div>
+    </div>
+    <div class="bees-footer-bottom">
+      <img src="../_shared/img/bees-logo.png" alt="BEES" />
+      <p>© AB InBev 2026. All rights reserved.</p>
+      <a href="#">Cookie settings</a>
+    </div>
+  </footer>
+
+  <!-- ============================================================ -->
+  <!-- Behaviour                                                    -->
+  <!-- ============================================================ -->
+  <script>
+    'use strict';
+
+    // ----- Helpers ------------------------------------------------
+    const STATUS_LABEL = {
+      new:      { label: 'New',           tone: 'is-info' },
+      expiring: { label: 'Expiring soon', tone: 'is-warning' },
+      active:   { label: 'Active',        tone: 'is-success' },
+      used:     { label: 'Used',          tone: 'is-neutral' },
+    };
+    const SUMMARY_CARDS = [
+      { key: 'all',      label: 'All offers',        dot: 'tone-all',      track: 'summary-card-all' },
+      { key: 'new',      label: 'New',               dot: 'tone-info',     track: 'summary-card-new' },
+      { key: 'expiring', label: 'Expiring soon',     dot: 'tone-warning',  track: 'summary-card-expiring' },
+      { key: 'active',   label: 'Active',            dot: 'tone-success',  track: 'summary-card-active' },
+      { key: 'used',     label: 'Used / Expired',    dot: 'tone-neutral',  track: 'summary-card-used' },
+    ];
+    const BRAND_LOGO_CLASS = {
+      'Budweiser':    'brand-budweiser',
+      'Corona':       'brand-corona',
+      'Stella Artois':'brand-stella',
+      'Spaten':       'brand-spaten',
+      'Becks':        'brand-becks',
+      'Other':        'brand-other',
+    };
+    const brandInitials = (brand) => (brand || '').split(/\s+/).map((s) => s[0]).join('').slice(0, 2).toUpperCase();
+    const fmtDate = (iso) => {
+      const d = new Date(iso + 'T12:00:00Z');
+      return d.toLocaleDateString('en-GB', { day: '2-digit', month: 'short', year: 'numeric' });
+    };
+    const daysBetween = (a, b) => Math.round((a.getTime() - b.getTime()) / 86400000);
+    const sameDay = (a, b) => a.toDateString() === b.toDateString();
+
+    // ----- State --------------------------------------------------
+    // Initialised inside boot(), AFTER deferred data.js has executed.
+    let REF;
+    let ALL_OFFERS = [];
+    let activated = new Set();
+
+    const filters = {
+      draft:   { status: [], categories: [], brands: [], from: '', to: '' },
+      applied: { status: [], categories: [], brands: [], from: '', to: '' },
+      quickStatus: 'all',
+    };
+
+    let currentOfferId = null;
+
+    // ----- Helpers: filter ---------------------------------------
+    function matchesApplied(o) {
+      const a = filters.applied;
+      if (filters.quickStatus !== 'all' && o.status !== filters.quickStatus) return false;
+      if (a.status.length && !a.status.includes(o.status)) return false;
+      if (a.categories.length && !a.categories.includes(o.category)) return false;
+      if (a.brands.length && !a.brands.includes(o.brand)) return false;
+      if (a.from && o.expiresAt < a.from) return false;
+      if (a.to && o.expiresAt > a.to) return false;
+      return true;
+    }
+
+    function filteredOffers() {
+      return ALL_OFFERS.filter(matchesApplied);
+    }
+
+    function appliedIsDirty() {
+      const a = filters.applied;
+      const d = filters.draft;
+      return JSON.stringify(a) !== JSON.stringify(d);
+    }
+
+    function activeFilterCount() {
+      const a = filters.applied;
+      return (a.status.length ? 1 : 0)
+           + (a.categories.length ? 1 : 0)
+           + (a.brands.length ? 1 : 0)
+           + (a.from ? 1 : 0)
+           + (a.to ? 1 : 0)
+           + (filters.quickStatus !== 'all' ? 1 : 0);
+    }
+
+    // ----- Render: summary cards ---------------------------------
+    function renderSummaryCards() {
+      const host = document.getElementById('summaryCards');
+      const total = ALL_OFFERS.length;
+      const countFor = (key) => key === 'all' ? total : ALL_OFFERS.filter((o) => o.status === key).length;
+      host.innerHTML = SUMMARY_CARDS.map((c) => {
+        const n = countFor(c.key);
+        const pct = total ? Math.round((n / total) * 100) : 0;
+        const isActive = filters.quickStatus === c.key;
+        return `<button class="summary-card ${isActive ? 'is-active' : ''}" data-track="${c.track}" data-key="${c.key}">
+          <span class="summary-card-head"><span class="summary-card-dot ${c.dot}"></span>${c.label}</span>
+          <span class="summary-card-count">${n}</span>
+          <span class="summary-card-percent">${c.key === 'all' ? 'total available' : pct + '% of available'}</span>
+        </button>`;
+      }).join('');
+      host.querySelectorAll('.summary-card').forEach((el) => {
+        el.addEventListener('click', () => {
+          const key = el.dataset.key;
+          filters.quickStatus = filters.quickStatus === key ? 'all' : key;
+          renderSummaryCards();
+          renderRows();
+          renderFilterSummary();
+        });
+      });
+    }
+
+    // ----- Render: rows ------------------------------------------
+    function buildRow(o) {
+      const isActivated = activated.has(o.id);
+      const status = isActivated && o.status !== 'used' ? 'active' : o.status;
+      const meta = STATUS_LABEL[status];
+      const expDate = new Date(o.expiresAt + 'T12:00:00Z');
+      const days = daysBetween(expDate, REF);
+      const isSoon = days >= 0 && days <= 7 && status !== 'used';
+      const isPast = days < 0;
+      const expClass = isSoon ? 'is-soon' : '';
+      const expLabel = isPast
+        ? `Closed ${fmtDate(o.expiresAt)}`
+        : (days === 0 ? 'Expires today'
+           : days === 1 ? 'Expires tomorrow'
+           : isSoon ? `In ${days} days` : '');
+      const brandCls = BRAND_LOGO_CLASS[o.brand] || 'brand-other';
+
+      const activateBtn = isActivated
+        ? `<button class="hexa-btn hexa-btn--sm btn-activated" disabled>
+             <hexa-icon name="CheckIcon"></hexa-icon> Activated
+           </button>`
+        : (status === 'used'
+            ? `<button class="hexa-btn hexa-btn--sm hexa-btn--tertiary" disabled>Closed</button>`
+            : `<button class="hexa-btn hexa-btn--sm hexa-btn--primary"
+                 data-track="cta-activate-row" data-action="activate">
+                 Activate
+               </button>`);
+
+      return `<div class="offer-row offer-row--data"
+                   data-track="offer-row-${o.id}"
+                   data-id="${o.id}">
+        <div class="cell-name">${o.name}<small>${o.id}</small></div>
+        <div class="cell-brand">
+          <span class="brand-logo ${brandCls}">${brandInitials(o.brand)}</span>${o.brand}
+        </div>
+        <div>${o.category}</div>
+        <div>${o.discount}</div>
+        <div>${o.minOrder}</div>
+        <div class="cell-expiry ${expClass}">
+          ${fmtDate(o.expiresAt)}${expLabel ? `<small>${expLabel}</small>` : ''}
+        </div>
+        <div><span class="status-pill ${meta.tone}">${meta.label}</span></div>
+        <div class="cell-actions">
+          <button class="row-action" aria-label="View details"
+            data-track="cta-view-details" data-action="view">
+            <hexa-icon name="EyeOnIcon"></hexa-icon>
+          </button>
+          ${activateBtn}
+        </div>
+      </div>`;
+    }
+
+    function renderRows() {
+      const host = document.getElementById('rowsHost');
+      const list = filteredOffers();
+
+      document.getElementById('paginationTotal').textContent = `${list.length} ${list.length === 1 ? 'offer' : 'offers'}`;
+      document.getElementById('pageNumbers').innerHTML = buildPaginationControls(list.length);
+
+      if (!list.length) {
+        host.innerHTML = `
+          <div class="offer-empty">
+            <div class="hexa-empty">
+              <hexa-illustration name="NoSearchResults" size="160"></hexa-illustration>
+              <h3>No offers match your filters</h3>
+              <p class="text-body-md text-fg-neutral-secondary">
+                Try removing one of the filters, or
+                <a href="#" id="emptyClearLink" data-track="cta-empty-clear-filters">clear all filters</a>.
+              </p>
+            </div>
+          </div>`;
+        const link = document.getElementById('emptyClearLink');
+        if (link) link.addEventListener('click', (e) => { e.preventDefault(); clearFilters(true); });
+        return;
+      }
+
+      host.innerHTML = list.map(buildRow).join('');
+
+      host.querySelectorAll('.offer-row--data').forEach((row) => {
+        const id = row.dataset.id;
+        row.addEventListener('click', (e) => {
+          // ignore clicks on a button inside the row — buttons handle themselves below
+          if (e.target.closest('button')) return;
+          openDrawer(id);
+        });
+        row.querySelectorAll('[data-action="view"]').forEach((btn) => {
+          btn.addEventListener('click', (e) => { e.stopPropagation(); openDrawer(id); });
+        });
+        row.querySelectorAll('[data-action="activate"]').forEach((btn) => {
+          btn.addEventListener('click', (e) => { e.stopPropagation(); activateOffer(id, 'row'); });
+        });
+      });
+    }
+
+    function buildPaginationControls(total) {
+      const size = Number(document.getElementById('pageSize').value || 10);
+      const pages = Math.max(1, Math.ceil(total / size));
+      const numbers = [];
+      for (let i = 1; i <= Math.min(pages, 4); i++) {
+        numbers.push(`<button class="pagination-btn ${i === 1 ? 'is-active' : ''}" data-track="pagination-page-${i}">${i}</button>`);
+      }
+      return `
+        <button class="pagination-btn" disabled aria-label="First page"><hexa-icon name="ChevronLeftIcon"></hexa-icon><hexa-icon name="ChevronLeftIcon"></hexa-icon></button>
+        <button class="pagination-btn" disabled aria-label="Previous page"><hexa-icon name="ChevronLeftIcon"></hexa-icon></button>
+        ${numbers.join('')}
+        <button class="pagination-btn" ${pages <= 1 ? 'disabled' : ''} aria-label="Next page"><hexa-icon name="ChevronRightIcon"></hexa-icon></button>
+        <button class="pagination-btn" ${pages <= 1 ? 'disabled' : ''} aria-label="Last page"><hexa-icon name="ChevronRightIcon"></hexa-icon><hexa-icon name="ChevronRightIcon"></hexa-icon></button>
+      `;
+    }
+
+    // ----- Render: filter summary --------------------------------
+    function renderFilterSummary() {
+      const n = activeFilterCount();
+      const list = filteredOffers().length;
+      const sum = document.getElementById('filterSummary');
+      sum.textContent = n
+        ? `${list} ${list === 1 ? 'offer' : 'offers'} match · ${n} filter${n === 1 ? '' : 's'} applied`
+        : 'Showing all offers';
+      document.getElementById('filterToggle').classList.toggle('is-dirty', appliedIsDirty());
+    }
+
+    // ----- Drawer ------------------------------------------------
+    function openDrawer(id) {
+      const o = ALL_OFFERS.find((x) => x.id === id);
+      if (!o) return;
+      currentOfferId = id;
+      HT.track('drawer_opened', { offerId: id });
+
+      const isActivated = activated.has(o.id);
+      const status = isActivated && o.status !== 'used' ? 'active' : o.status;
+      const meta = STATUS_LABEL[status];
+
+      document.getElementById('drawerName').textContent     = o.name;
+      const logo = document.getElementById('drawerLogo');
+      logo.className = 'brand-logo ' + (BRAND_LOGO_CLASS[o.brand] || 'brand-other');
+      logo.textContent = brandInitials(o.brand);
+      document.getElementById('drawerBrand').textContent    = o.brand;
+      document.getElementById('drawerCategory').textContent = o.category;
+      const pill = document.getElementById('drawerPill');
+      pill.className = 'status-pill ' + meta.tone;
+      pill.textContent = meta.label;
+
+      document.getElementById('kvDiscount').innerHTML = `<strong>${o.discount}</strong><br><span style="color:var(--hexa-fg-neutral-tertiary);font-size:12px;">${o.discountDetail || ''}</span>`;
+      document.getElementById('kvMin').textContent    = o.minOrder;
+      document.getElementById('kvElig').textContent   = `${o.eligibleSkus.length} SKU${o.eligibleSkus.length === 1 ? '' : 's'} — see list below`;
+      document.getElementById('kvPeriod').textContent = `Added ${fmtDate(o.addedAt)} · expires ${fmtDate(o.expiresAt)}`;
+      document.getElementById('kvCode').textContent   = o.code;
+      document.getElementById('drawerTerms').textContent = o.terms;
+
+      document.getElementById('drawerSkus').innerHTML = o.eligibleSkus.map((s) =>
+        `<div class="sku-row">
+          <div class="sku-name">${s.name}</div>
+          <div class="sku-id">${s.sku}</div>
+          <div class="sku-uom">${s.uom}</div>
+        </div>`
+      ).join('');
+
+      // Status-contextual alert (PRD §7.2)
+      const alertBox = document.getElementById('drawerAlert');
+      const txt = document.getElementById('drawerAlertText');
+      const expDate = new Date(o.expiresAt + 'T12:00:00Z');
+      const days = daysBetween(expDate, REF);
+      if (isActivated) {
+        alertBox.className = 'drawer-alert is-success';
+        txt.innerHTML = `<strong>You activated this offer${o.activatedAt ? ' on ' + fmtDate(o.activatedAt) : ''}.</strong><br>The discount applies automatically on your next qualifying order.`;
+      } else if (status === 'expiring' || (days >= 0 && days <= 7)) {
+        alertBox.className = 'drawer-alert is-warning';
+        const dStr = days === 0 ? 'today' : (days === 1 ? 'tomorrow' : `in ${days} days`);
+        txt.innerHTML = `<strong>This offer expires ${dStr}.</strong> Activate before ${fmtDate(o.expiresAt)} to lock in the discount.`;
+      } else if (status === 'used') {
+        alertBox.className = 'drawer-alert is-neutral';
+        txt.innerHTML = `This offer closed on ${fmtDate(o.expiresAt)}. It is shown here for your reference only.`;
+      } else if (status === 'new') {
+        alertBox.className = 'drawer-alert is-info';
+        txt.innerHTML = `<strong>This offer is new.</strong> Activate it now before it's claimed by other buyers in your area.`;
+      } else {
+        alertBox.className = 'drawer-alert is-info';
+        txt.innerHTML = `This offer is currently available — activate it any time before ${fmtDate(o.expiresAt)}.`;
+      }
+
+      // Toggle Activate button
+      const btn = document.getElementById('drawerActivate');
+      if (isActivated) {
+        btn.disabled = true;
+        btn.classList.add('btn-activated');
+        btn.innerHTML = '<hexa-icon name="CheckIcon"></hexa-icon> Activated';
+      } else if (status === 'used') {
+        btn.disabled = true;
+        btn.classList.remove('btn-activated');
+        btn.innerHTML = 'Offer closed';
+      } else {
+        btn.disabled = false;
+        btn.classList.remove('btn-activated');
+        btn.innerHTML = '<hexa-icon name="CheckIcon"></hexa-icon> Activate offer';
+      }
+
+      document.getElementById('drawer').hidden = false;
+      document.getElementById('drawerScrim').hidden = false;
+    }
+
+    function closeDrawer() {
+      currentOfferId = null;
+      document.getElementById('drawer').hidden = true;
+      document.getElementById('drawerScrim').hidden = true;
+    }
+
+    // ----- Activate flow ----------------------------------------
+    function activateOffer(id, source) {
+      const o = ALL_OFFERS.find((x) => x.id === id);
+      if (!o || activated.has(id)) return;
+      activated.add(id);
+      o.status = 'active';
+      o.activatedAt = REF.toISOString().slice(0, 10);
+
+      HT.track('offer_activated', { offerId: id, source: source || 'unknown' });
+
+      // Re-render the rows so the pill flips + button becomes "Activated"
+      renderRows();
+      renderSummaryCards();
+      renderFilterSummary();
+
+      // Flash the row briefly
+      requestAnimationFrame(() => {
+        const row = document.querySelector(`.offer-row--data[data-id="${id}"]`);
+        if (row) {
+          row.classList.add('flash');
+          setTimeout(() => row.classList.remove('flash'), 1700);
+        }
+      });
+
+      // If the drawer is open for this offer, refresh its button + alert
+      if (currentOfferId === id) openDrawer(id);
+    }
+
+    // ----- Filter panel wiring ----------------------------------
+    function readDraft() {
+      const sel = (id) => Array.from(document.getElementById(id).selectedOptions).map((o) => o.value);
+      filters.draft.status     = sel('f-status');
+      filters.draft.categories = sel('f-category');
+      filters.draft.brands     = sel('f-brand');
+      filters.draft.from       = document.getElementById('f-from').value;
+      filters.draft.to         = document.getElementById('f-to').value;
+    }
+    function writeDraftToForm() {
+      const setSel = (id, vals) => {
+        document.getElementById(id).querySelectorAll('option').forEach((o) => {
+          o.selected = vals.includes(o.value);
+        });
+      };
+      setSel('f-status',   filters.draft.status);
+      setSel('f-category', filters.draft.categories);
+      setSel('f-brand',    filters.draft.brands);
+      document.getElementById('f-from').value = filters.draft.from;
+      document.getElementById('f-to').value   = filters.draft.to;
+    }
+    function applyFilters() {
+      readDraft();
+      filters.applied = JSON.parse(JSON.stringify(filters.draft));
+      HT.track('filter_applied', {
+        statusCount:     filters.applied.status.length,
+        categoryCount:   filters.applied.categories.length,
+        brandCount:      filters.applied.brands.length,
+        hasDateRange:    !!(filters.applied.from || filters.applied.to),
+      });
+      document.getElementById('filterPanel').hidden = true;
+      document.getElementById('filterToggle').setAttribute('aria-expanded', 'false');
+      renderRows();
+      renderFilterSummary();
+    }
+    function clearFilters(alsoClearQuick) {
+      filters.draft   = { status: [], categories: [], brands: [], from: '', to: '' };
+      filters.applied = { status: [], categories: [], brands: [], from: '', to: '' };
+      if (alsoClearQuick) filters.quickStatus = 'all';
+      writeDraftToForm();
+      renderRows();
+      renderSummaryCards();
+      renderFilterSummary();
+    }
+
+    // ----- Hash routing -----------------------------------------
+    function showScreen() {
+      const hash = location.hash || '#hub';
+      const id = hash.replace(/^#/, '');
+      document.querySelectorAll('[data-screen]').forEach((s) => {
+        s.hidden = s.id !== id;
+      });
+      // Hide sub-tabs when off the hub
+      document.getElementById('subtabs').style.display = (id === 'hub') ? '' : 'none';
+      window.scrollTo(0, 0);
+    }
+
+    // ----- Boot -------------------------------------------------
+    function boot() {
+      REF = window.OFFERS_DATA?.referenceDate || new Date();
+      ALL_OFFERS = (window.OFFERS_DATA?.offers || []).map((o) => ({ ...o }));
+      activated = new Set(ALL_OFFERS.filter((o) => o.status === 'active').map((o) => o.id));
+
+      renderSummaryCards();
+      renderRows();
+      renderFilterSummary();
+
+      document.getElementById('filterToggle').addEventListener('click', () => {
+        const panel = document.getElementById('filterPanel');
+        const open = !panel.hidden;
+        panel.hidden = open;
+        document.getElementById('filterToggle').setAttribute('aria-expanded', String(!open));
+      });
+      ['f-status','f-category','f-brand','f-from','f-to'].forEach((id) => {
+        document.getElementById(id).addEventListener('change', () => {
+          readDraft();
+          renderFilterSummary();
+        });
+      });
+      document.getElementById('btnApply').addEventListener('click', applyFilters);
+      document.getElementById('btnClear').addEventListener('click', () => clearFilters(false));
+
+      document.getElementById('drawerClose').addEventListener('click', closeDrawer);
+      document.getElementById('drawerScrim').addEventListener('click', closeDrawer);
+      document.getElementById('drawerActivate').addEventListener('click', () => {
+        if (currentOfferId) activateOffer(currentOfferId, 'drawer');
+      });
+      document.addEventListener('keydown', (e) => {
+        if (e.key === 'Escape' && !document.getElementById('drawer').hidden) closeDrawer();
+      });
+
+      document.getElementById('pageSize').addEventListener('change', renderRows);
+
+      addEventListener('hashchange', showScreen);
+      showScreen();
+    }
+
+    if (document.readyState === 'loading') {
+      document.addEventListener('DOMContentLoaded', boot);
+    } else {
+      boot();
+    }
+  </script>
+</body>
+</html>
